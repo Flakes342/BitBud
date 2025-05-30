@@ -1,0 +1,12 @@
+# Ignore virtual environments
+venv/
+
+# Ignore ChromaDB data directory
+chromadb/
+
+# Optional common Python ignores
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+.DS_Store
