@@ -1,6 +1,7 @@
 # BitBud
 
-![image](https://github.com/user-attachments/assets/4e90b666-9cfb-487d-8c99-e8f2090f2c5f)
+![Retro_Pixel_Logo_with_Robot-removebg-preview](https://github.com/user-attachments/assets/b39baafd-674e-499b-a1f2-b2472c661ed7)
+
 
 **Your Local AI Productivity Sidekick**  
 An 8-bit desktop agent that learns your habits, helps automate tasks, and enhances your Linux environment — all running locally on your machine.
