@@ -5,53 +5,106 @@ import chromadb
 from chromadb.utils import embedding_functions
 from datetime import datetime
 import uuid
+from agent.llm import build_rag_prompt, generate_context_summary
+from langchain.vectorstores import Chroma
+from langchain.embeddings import HuggingFaceEmbeddings
 
-
-# Chroma client and embedding model
-chroma_client = chromadb.PersistentClient(path="chromadb")
-
-embedding_func = embedding_functions.SentenceTransformerEmbeddingFunction(
+embedding_func = HuggingFaceEmbeddings(
     model_name="/home/ayush/Documents/bitbud/models/paraphrase-MiniLM-L3-v2/"
 )
 
-collection = chroma_client.get_or_create_collection(
-    name="bitbud-memory",
-    embedding_function=embedding_func
+
+vectorstore = Chroma(
+    collection_name="bitbud",
+    embedding_function=embedding_func,
+    persist_directory="./bitbud_memory"
 )
 
-
-# --- Store message to memory
-# def is_meaningful(text: str) -> bool:
-#     return len(text.split()) > 3 and not text.lower().strip() in {"ok", "sure", "yes", "no"}
-
 def store_to_memory(text: str, metadata: dict = None):
-    # if not is_meaningful(text):
-    #     return
-    metadata = metadata or {"source": "conversation"}
-    collection.add(
-        ids=[str(uuid.uuid4())],
-        documents=[text],
+    context = generate_context_summary(text)
+    metadata = metadata or {}
+    metadata["context"] = context
+    metadata["timestamp"] = datetime.now().isoformat()
+    metadata["source"] = "conversation"
+
+    vectorstore.add_texts(
+        texts=[text],
         metadatas=[metadata]
     )
-    print(f"[Memory] Stored: {text}")
+
+    print(f"[Memory] Stored: {text} with metadata: {metadata}")
 
 
-# --- Retrieve context given a query
-def retrieve_context(query: str, k=10, score_threshold=0.5, mmr=True) -> list[str]:
-    query_embedding = embedding_func([query])[0]
-    results = collection.query(
-        query_embeddings=[query_embedding],
-        n_results=k,
-        include=["documents", "distances"]
-    )
+def retrieve_context(query: str, k=5, score_threshold=0.75) -> list[str]:
+    # Step 1: Embedding-based retrieval
+    docs = vectorstore.similarity_search(query, k=k)
+    
+    # Step 2: Context-based filtering (optional but powerful)
+    query_context = generate_context_summary(query)
+    if query_context:
+        query_tokens = set(query_context.lower().split())
 
-    documents = results.get("documents", [[]])[0]
-    scores = results.get("distances", [[]])[0]
+        filtered_docs = []
+        for doc in docs:
+            context_meta = doc.metadata.get("context", "").lower()
+            if any(token in context_meta for token in query_tokens):
+                filtered_docs.append(doc)
+    else:
+        filtered_docs = docs  # Fallback to embedding only
 
-    # Filter based on distance (lower is better)
-    filtered = list(set([doc for doc, dist in zip(documents, scores) if dist < (1 - score_threshold)]))
-    print(f"[Memory] Retrieved (filtered): {filtered}")
-    return filtered
+    # Optional score thresholding (if needed)
+    results = [doc.page_content for doc in filtered_docs]
+    print(f"[Memory] Retrieved (filtered): {results}")
+    return results
+
+#--------------------------------------------------------------------------------------------------------------------------------
+# # Chroma client and embedding model
+# chroma_client = chromadb.PersistentClient(path="chromadb")
+
+# embedding_func = embedding_functions.SentenceTransformerEmbeddingFunction(
+#     model_name="/home/ayush/Documents/bitbud/models/paraphrase-MiniLM-L3-v2/"
+# )
+
+# collection = chroma_client.get_or_create_collection(
+#     name="bitbud-memory",
+#     embedding_function=embedding_func
+# )
+
+
+# # --- Store message to memory
+# # def is_meaningful(text: str) -> bool:
+# #     return len(text.split()) > 3 and not text.lower().strip() in {"ok", "sure", "yes", "no"}
+
+# def store_to_memory(text: str, metadata: dict = None):
+#     # if not is_meaningful(text):
+#     #     return
+#     metadata = metadata or {"source": "conversation"}
+#     collection.add(
+#         ids=[str(uuid.uuid4())],
+#         documents=["User:"+text],
+#         metadatas=[metadata]
+#     )
+#     print(f"[Memory] Stored: {text}")
+
+
+# # --- Retrieve context given a query
+# def retrieve_context(query: str, k=10, score_threshold=0.5, mmr=True) -> list[str]:
+#     query_embedding = embedding_func([query])[0]
+#     results = collection.query(
+#         query_embeddings=[query_embedding],
+#         n_results=k,
+#         include=["documents", "distances"]
+#     )
+
+#     documents = results.get("documents", [[]])[0]
+#     scores = results.get("distances", [[]])[0]
+
+#     # Filter based on distance (lower is better)
+#     filtered = list(set([doc for doc, dist in zip(documents, scores) if dist < (1 - score_threshold)]))
+#     print(f"[Memory] Retrieved (filtered): {filtered}")
+#     return filtered
+
+#--------------------------------------------------------------------------------------------------------------------------------
 
 
 # --- Prompt builder
@@ -82,5 +135,5 @@ def handle_user_input(user_input: str) -> str:
     })
 
     reply = res.json().get("response", "...").strip()
-    store_to_memory(reply, metadata={"source": "assistant_reply"})
+    # store_to_memory(reply, metadata={"source": "assistant_reply"})
     return reply

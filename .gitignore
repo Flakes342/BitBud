@@ -2,9 +2,9 @@
 venv/
 
 # Ignore ChromaDB data directory
-chromadb/
+bitbud_memory/
 
-# Optional common Python ignores
+# Python ignores
 __pycache__/
 *.py[cod]
 *.egg-info/

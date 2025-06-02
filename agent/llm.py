@@ -61,6 +61,46 @@ User: {user_input}
         print("[Intent parsing failed]", e)
         return {"function": "fallback", "args": {}, "error": str(e), "raw": raw_response}
 
+# --- Prompt builder
+def build_rag_prompt(user_input: str, context_docs: list[str]) -> str:
+    context_str = "\n".join(context_docs)
+    return f"""
+You are BitBud, a concise and intelligent personal AI agent.
+
+You have access to your following past conversations and memories with the user. 
+{context_str}
+
+Instruction:
+Given the user input below, respond in a short, factual, and helpful way using the above context **only if it's relevant**. Do NOT guess or overexplain. If no context applies, respond naturally but **briefly**.
+
+User: "{user_input}"
+""".strip()
+
+
+def generate_context_summary(text: str):
+    prompt = f"""
+You are a BitBud, a memory assistant.
+
+Please generate a **short, high-quality contextual summary** of the user's message. The goal is to help retrieve this input later based on its intent, meaning, or relevance.
+
+Focus on:
+- The user’s **intent or fact stated** (e.g. they shared their name, asked a question, gave a command, made a preference known, etc.)
+- Any **personal data** (like name, location, preferences)
+- Any **task, question, or command** they gave
+- Be **succinct, self-contained**, and only output the context.
+
+Do **NOT** include generic statements like “The user said something” — instead be precise (e.g., “User shared their name is Ayush”).
+
+Answer only with the cleaned-up, standalone context summary — no explanation, no prefixes.
+
+
+Message: {text}
+Summary:
+"""
+    summary = llm.invoke(prompt).strip()
+    return None if summary.lower() == "none" else summary
+
+
 
 
     

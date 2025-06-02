@@ -1,2 +1,55 @@
+import subprocess
+import urllib.parse
+import asyncio
+from playwright.async_api import async_playwright
+
+async def _scrape_google_ai_answer(query):
+    async with async_playwright() as p:
+        browser = await p.chromium.launch(headless=True)
+        page = await browser.new_page()
+        encoded_query = urllib.parse.quote_plus(query)
+        search_url = f"https://www.google.com/search?q={encoded_query}"
+        await page.goto(search_url)
+        await page.wait_for_timeout(50)
+        print ("I am here")
+
+        # Try finding Gemini-style AI Overview summary
+        try:
+            selectors_to_try = [
+                "div[data-attrid='wa:/description']",
+                "div[jscontroller]",
+                "div[data-md='139'] div span",  # fallback
+                "div.xpdopen",
+                "div[jsname='WbKHeb']",  # Often used for AI Overview
+                "div[data-attrid='wa:/description']",  # Sometimes general summary
+                "div[data-md='139']",
+                "div[class*='AIanswer']",  # backup generic
+            ]
+
+            for selector in selectors_to_try:
+                box = await page.query_selector(selector)
+                if box:
+                    text = await box.inner_text()
+                    if len(text.strip()) > 30:
+                        await browser.close()
+                        return text.strip()
+            print ("No AI summary found in Gemini style.")
+            return "No AI summary found."
+
+        except Exception as e:
+            return f"Error: {e}"
+        finally:
+            await browser.close()
+
+
 def search_web(query):
-    return f"Searching for: {query} — not implemented yet!"
+
+    summary = asyncio.run(_scrape_google_ai_answer(query))
+    if summary and summary!='No AI summary found.':
+        return summary
+
+    encoded_query = urllib.parse.quote_plus(query)
+    url = f"https://www.google.com/search?q={encoded_query}"
+    cmd = f"firefox {url}"
+    subprocess.Popen(cmd, shell=True)
+    return f"Searching for: {query}"
