@@ -1,19 +1,46 @@
 import subprocess
+import pyautogui
+import urllib
+import time
 
-def open_app(app_name):
+
+def open_app(app_name: str, query: str = ""):
+    app_name = app_name.lower().strip()
+    query = query.strip()
+    
     commands = {
         "spotify": "spotify",
         "vscode": "code",
         "youtube": "firefox https://youtube.com",
         "netflix": "firefox https://netflix.com",
+        "chatgpt": "firefox https://chatgpt.com",
+        "linkedin": "firefox https://linkedin.com",
+        "github": "firefox https://github.com/Flakes342",
         "chrome": "google-chrome",
-        "terminal": "gnome-terminal",
     }
     cmd = commands.get(app_name.lower())
-    if cmd:
+
+    if not app_name:
+        return "No app name provided. Please specify an app to open."
+
+    elif app_name == 'terminal':
+        # Special case for terminal, use hotkey
+        pyautogui.hotkey("alt", "ctrl", "t")
+        return "Opening terminal..."
+
+    elif app_name == "youtube":
+        if query:
+            search_url = f"https://www.youtube.com/results?search_query={urllib.parse.quote_plus(query)}"
+            cmd = f"firefox {search_url}"
+            subprocess.Popen(cmd.split())
+            time.sleep(5)
+            pyautogui.click(613, 297)
+            return f"Opened YouTube and searched: {query}"
+
+    elif cmd:
         try:
             subprocess.Popen(cmd.split())
-            return f"Opening {app_name}."
+            return f"Opening {app_name}..."
         except Exception as e:
             return f"Failed to open {app_name}: {e}"
     return f"App '{app_name}' not recognized."

@@ -2,6 +2,9 @@ import subprocess
 import urllib.parse
 import asyncio
 from playwright.async_api import async_playwright
+from selenium import webdriver
+import time
+
 
 async def _scrape_google_ai_answer(query):
     async with async_playwright() as p:
@@ -9,8 +12,8 @@ async def _scrape_google_ai_answer(query):
         page = await browser.new_page()
         encoded_query = urllib.parse.quote_plus(query)
         search_url = f"https://www.google.com/search?q={encoded_query}"
-        await page.goto(search_url)
-        await page.wait_for_timeout(50)
+        await page.goto(search_url, timeout=60000)
+        await page.wait_for_timeout(5000)
         print ("I am here")
 
         # Try finding Gemini-style AI Overview summary
@@ -24,16 +27,20 @@ async def _scrape_google_ai_answer(query):
                 "div[data-attrid='wa:/description']",  # Sometimes general summary
                 "div[data-md='139']",
                 "div[class*='AIanswer']",  # backup generic
+                "div[jsname='K7J75c']",  # Gemini AI answer
+                "div[jsname='C4z5Vb']",  # Gemini AI answer
+                "div[jsname='C4z5Vb'] div[jsname='WbKHeb']",  # Gemini AI answer
+                "div[jsname='WbKHeb'] div[jsname='C4z5Vb']",  # Gemini AI answer        
             ]
 
             for selector in selectors_to_try:
                 box = await page.query_selector(selector)
                 if box:
                     text = await box.inner_text()
-                    if len(text.strip()) > 30:
+                    if len(text.strip()) > 20:
                         await browser.close()
                         return text.strip()
-            print ("No AI summary found in Gemini style.")
+            print ("No AI summary found.")
             return "No AI summary found."
 
         except Exception as e:

@@ -5,7 +5,9 @@ from agent.tools.app_launcher import open_app
 from agent.tools.recommend import recommend_music
 from agent.tools.search import search_web
 from agent.llm import get_intent
-from agent.chromaMemory import handle_user_input  # <- uses RAG end-to-end
+from agent.chromaMemory import handle_user_input 
+import urllib.parse
+
 
 # --- BitBud state
 class BitBudState(TypedDict, total=False):
@@ -13,8 +15,6 @@ class BitBudState(TypedDict, total=False):
     output: str
     function: str
     args: dict
-
-import urllib.parse
 
 def parse_args(args):
     if isinstance(args, dict):
@@ -26,6 +26,7 @@ def parse_args(args):
 # --- Route input to functions or fallback to RAG
 def route_input(state):
     user_input = state["input"]
+    # print(f"[Router] User Input: {user_input}")
     result = get_intent(user_input)
 
     func = result.get("function")
@@ -49,7 +50,9 @@ def route_input(state):
 
 # --- Intent handlers
 def handle_open_app(state): 
-    return {"output": open_app(state["args"].get("name", ""))}
+    name = state["args"].get("name", "")
+    query = state["args"].get("query", "")
+    return {"output": open_app(name, query)} #changed to match new open_app signature
 
 def handle_recommend_music(state): 
     return {"output": recommend_music()}
