@@ -2,6 +2,19 @@ import subprocess
 import pyautogui
 import urllib
 import time
+from dotenv import load_dotenv
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth
+import os
+
+load_dotenv()
+
+sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
+    client_id=os.getenv("SPOTIPY_CLIENT_ID"),
+    client_secret=os.getenv("SPOTIPY_CLIENT_SECRET"),
+    redirect_uri=os.getenv("SPOTIPY_REDIRECT_URI"),
+    scope="user-read-playback-state,user-modify-playback-state"
+))
 
 
 def open_app(app_name: str, query: str = ""):
@@ -27,6 +40,13 @@ def open_app(app_name: str, query: str = ""):
         # Special case for terminal, use hotkey
         pyautogui.hotkey("alt", "ctrl", "t")
         return "Opening terminal..."
+    
+    elif app_name == "spotify":
+        web_url = f"https://open.spotify.com/search/{urllib.parse.quote_plus(query)}"
+        subprocess.Popen(["firefox", web_url])
+        return (
+            f"No active Spotify device found. Opened Spotify Web Player for '{query}'. "
+            "Please play a song manually once to activate the device.")
 
     elif app_name == "youtube":
         if query:

@@ -1,0 +1,11 @@
+--search ai scrapper
+--spotify
+--meet
+--map
+--clock
+--gmail
+--system_specs
+--basic apps (calculator, calender, etc)
+--about_me
+--voice
+--8bit ui
