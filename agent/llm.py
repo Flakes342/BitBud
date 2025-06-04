@@ -24,17 +24,17 @@ Available functions:
    - If the user says something like “play *song name* on Spotify” or “open YouTube and search for *thing*”, include both `name` and `query`.
    - If they just say “open YouTube”, set `query` as "" or omit it.
 2. Only use `recommend_music` if the user explicitly asks for music suggestions or something like "recommend a song", "suggest music", etc. DO **NOT** use it for general conversation or vague requests.
-3. Only use `search_web` if the user clearly asks to look something up, search online, or find information.
+3. Only use `search_web` if the user **clearly asks** to look something up or search online. For example, “look up”, “search”, etc. DO **NOT** use it for general conversation or vague requests.
 4. Use `fallback` for **ALL** other vague, conversational, or non-command messages (e.g., “My name is John”, “How are you?”, “This is great”, “Can you help?”, “I like pizza”).
 5. Use **exactly** the function names and argument formats as shown below.
 
 ### Examples:
 
 User: open Spotify  
-→ {{ "function": "open_app", "args": {{ "name": "Spotify" }} }}
+→ {{ "function": "open_app", "args": { "name": "Spotify" } }}
 
 User: play Espresso by Sabrina Carpenter on Spotify  
-→ {{"function": "open_app", "args": { "name": "Spotify", "query": "Espresso by Sabrina Carpenter" } }}
+→ {{ "function": "open_app", "args": { "name": "Spotify", "query": "Espresso by Sabrina Carpenter" } }}
 
 User: open YouTube and search lo-fi beats  
 → {{ "function": "open_app", "args": { "name": "YouTube", "query": "lo-fi beats" } }}

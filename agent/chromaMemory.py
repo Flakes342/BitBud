@@ -8,6 +8,7 @@ import uuid
 from agent.llm import build_rag_prompt, generate_context_summary
 from langchain.vectorstores import Chroma
 from langchain.embeddings import HuggingFaceEmbeddings
+from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 embedding_func = HuggingFaceEmbeddings(
     model_name="/home/ayush/Documents/bitbud/models/paraphrase-MiniLM-L3-v2/"
@@ -19,6 +20,24 @@ vectorstore = Chroma(
     embedding_function=embedding_func,
     persist_directory="./bitbud_memory"
 )
+
+about_store = Chroma(
+    collection_name="about_user",
+    embedding_function=embedding_func,
+    persist_directory="./chroma_about"
+)
+
+hist_about_text = ''
+with open("ABOUT.md", "r") as f:
+    about_text = f.read()
+    if about_text.strip() != hist_about_text.strip():
+        print("[Memory] About text was changed, updating memory...")
+        hist_about_text = about_text
+        splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+        chunks = splitter.split_text(about_text)
+        about_store.add_texts(chunks)
+
+
 
 def store_to_memory(text: str, metadata: dict = None):
     context = generate_context_summary(text)
@@ -36,10 +55,8 @@ def store_to_memory(text: str, metadata: dict = None):
 
 
 def retrieve_context(query: str, k=5, score_threshold=0.75) -> list[str]:
-    # Step 1: Embedding-based retrieval
     docs = vectorstore.similarity_search(query, k=k)
     
-    # Step 2: Context-based filtering (optional but powerful)
     query_context = generate_context_summary(query)
     if query_context:
         query_tokens = set(query_context.lower().split())
@@ -52,10 +69,14 @@ def retrieve_context(query: str, k=5, score_threshold=0.75) -> list[str]:
     else:
         filtered_docs = docs  # Fallback to embedding only
 
-    # Optional score thresholding (if needed)
     results = [doc.page_content for doc in filtered_docs]
     print(f"[Memory] Retrieved (filtered): {results}")
     return results
+
+def retrieve_about_context(query: str, k=3) -> list[str]:
+    results = about_store.similarity_search(query, k=k)
+    return [doc.page_content for doc in results]
+
 
 #--------------------------------------------------------------------------------------------------------------------------------
 # # Chroma client and embedding model
@@ -113,11 +134,12 @@ def build_rag_prompt(user_input: str, context_docs: list[str]) -> str:
     return f"""
 You are BitBud, a concise and intelligent personal AI agent.
 
-You have access to your following past conversations and memories with the user. 
+You have access to your following past conversations, memories and an about file provided by the user. 
 {context_str}
 
 Instruction:
-Given the user input below, respond in a short, factual, and helpful way using the above context **only if it's relevant**. Do NOT guess or overexplain. If no context applies, respond naturally but **briefly**.
+Given the user input below, respond in a short, factual, and helpful way using the above context **only if it's relevant**. 
+Do NOT guess or overexplain. Do NOT say random things. If no context applies, respond naturally but **briefly**.
 
 User: "{user_input}"
 """.strip()
@@ -125,7 +147,11 @@ User: "{user_input}"
 # --- Main handler
 def handle_user_input(user_input: str) -> str:
     store_to_memory(user_input)
-    context = retrieve_context(user_input)
+    memory_context = retrieve_context(user_input)
+    about_context = retrieve_about_context(user_input)
+
+    context = memory_context + about_context
+
     prompt = build_rag_prompt(user_input, context)
 
     res = requests.post("http://localhost:11434/api/generate", json={
