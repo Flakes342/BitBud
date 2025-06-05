@@ -1,5 +1,5 @@
 # BitBud
-<center> ![WhatsApp Image 2025-06-06 at 03 18 56](https://github.com/user-attachments/assets/016d11a4-aa39-4d04-ba61-84fced61360c)
+<center>(https://github.com/user-attachments/assets/016d11a4-aa39-4d04-ba61-84fced61360c)
  </center>
 
 **Your Local AI Productivity Sidekick**  
