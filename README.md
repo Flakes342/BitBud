@@ -1,5 +1,5 @@
 # BitBud
-![Retro_Pixel_Logo_with_Robot-removebg-preview](https://github.com/user-attachments/assets/08538ad5-ac0f-4dd3-83d0-f75cc3f93eec)
+<center> file:///home/ayush/Downloads/WhatsApp%20Image%202025-06-06%20at%2003.18.56.jpeg </center>
 
 **Your Local AI Productivity Sidekick**  
 An 8-bit desktop agent that learns your habits, helps automate tasks, and enhances your Linux environment — all running locally on your machine.
