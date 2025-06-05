@@ -4,6 +4,7 @@ from langchain_core.runnables import RunnableLambda
 from agent.tools.app_launcher import open_app
 from agent.tools.recommend import recommend_music
 from agent.tools.search import search_web
+from agent.tools.shell_command import linux_commands
 from agent.llm import get_intent
 from agent.chromaMemory import handle_user_input 
 import urllib.parse
@@ -39,8 +40,10 @@ def route_input(state):
         return {"function": "recommend_music", "args": args}
     elif func == "search_web":
         return {"function": "search_web", "args": args}
+    elif func == "linux_commands":
+        return {"function": "linux_commands", "args": args}
 
-    # For anything else (remember, recall, fallback): use RAG
+    # For anything else (remember, recall, fallback): RAG
     rag_response = handle_user_input(user_input)
     return {
         "function": "fallback",
@@ -60,6 +63,9 @@ def handle_recommend_music(state):
 def handle_search_web(state): 
     return {"output": search_web(state["args"].get("query", ""))}
 
+def handle_linux_commands(state): 
+    return {"output": linux_commands(state["args"].get("command", ""))}
+
 def fallback_handler(state): 
     return {"output": state.get("output", "Hmm, not sure what you meant.")}
 
@@ -71,6 +77,8 @@ def build_graph():
     graph.add_node("open_app", RunnableLambda(handle_open_app))
     graph.add_node("recommend_music", RunnableLambda(handle_recommend_music))
     graph.add_node("search_web", RunnableLambda(handle_search_web))
+    graph.add_node("linux_commands", RunnableLambda(handle_linux_commands))
+
     graph.add_node("fallback", RunnableLambda(fallback_handler))
 
     def decide_next_node(state):
@@ -78,6 +86,7 @@ def build_graph():
         if func == "open_app": return "open_app"
         if func == "recommend_music": return "recommend_music"
         if func == "search_web": return "search_web"
+        if func == "linux_commands": return "linux_commands"
         return "fallback"
 
     graph.set_entry_point("route_input")
@@ -86,6 +95,7 @@ def build_graph():
     graph.add_edge("open_app", END)
     graph.add_edge("recommend_music", END)
     graph.add_edge("search_web", END)
+    graph.add_edge("linux_commands", END)
     graph.add_edge("fallback", END)
 
     return graph.compile()

@@ -53,7 +53,7 @@ def open_app(app_name: str, query: str = ""):
             search_url = f"https://www.youtube.com/results?search_query={urllib.parse.quote_plus(query)}"
             cmd = f"firefox {search_url}"
             subprocess.Popen(cmd.split())
-            time.sleep(5)
+            time.sleep(10)
             pyautogui.click(613, 297)
             return f"Opened YouTube and searched: {query}"
 

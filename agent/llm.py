@@ -17,6 +17,7 @@ Available functions:
 - open_app(name: str, query: Optional[str])
 - recommend_music()
 - search_web(query: str)
+- linux_commands(command: str)
 - fallback()
 
 ### Rules:
@@ -26,8 +27,9 @@ Available functions:
    - If they just say “open YouTube”, set `query` as "" or omit it.
 2. Only use `recommend_music` if the user explicitly asks for music suggestions or something like "recommend a song", "suggest music", etc. DO **NOT** use it for general conversation or vague requests.
 3. Only use `search_web` if the user **clearly asks** to look something up, search online, or find information. For example, “look up”, “search”, etc. DO **NOT** use it for general conversation or vague requests.
-4. Use `fallback` for **ALL** other vague, conversational, or non-command messages (e.g., “My name is John”, “How are you?”, “This is great”, “Can you help?”, “I like pizza”).
-5. Use **exactly** the function names and argument formats as shown below.
+4. Use `run_linux_command` if the user asks for a specific shell command or task that can be done via terminal (e.g., “run ls -l”, “show current directory”, etc.). DO **NOT** use it for general conversation or vague requests.
+5. Use `fallback` for **ALL** other vague, conversational, or non-command messages (e.g., “My name is John”, “How are you?”, “This is great”, “Can you help?”, “I like pizza”).
+6. Use **exactly** the function names and argument formats as shown below.
 
 ### Examples:
 
@@ -45,6 +47,9 @@ User: suggest me a good song
 
 User: look up weather in Gurugram  
 → {{ "function": "search_web", "args": {{ "query": "weather in Gurugram" }} }}
+
+User: run a command to do something in terminal  
+→ {{ "function": "linux_commands", "args": {"command": "<bash-comamnd>"} }}
 
 User: my name is Ayush
 → {{ "function": "fallback", "args": {{}} }}
@@ -85,7 +90,7 @@ Furthermore, here is some additional context about the user:
 {about_str}
 
 Instruction:
-Given the user input below, respond in a short, factual, and helpful way using the above context **only if it's relevant**. Do **NOT** guess or overexplain. If no context applies, respond naturally and ask clarification questions.
+Given the user input below, respond in a short, factual, and helpful way using the above context **only if it's relevant**. Do **NOT** guess or overexplain. DO **NOT** use direct sentences from the contexts, make it sound more natural. If no context applies, respond naturally and ask clarification questions.
 
 User: "{user_input}"
 """.strip()
@@ -113,6 +118,19 @@ Summary:
 """
     summary = llm.invoke(prompt).strip()
     return None if summary.lower() == "none" else summary
+
+
+
+def text_to_shell_command(message: str) -> str:
+    prompt = f"""You are a Linux command generator.
+Given a user's request in plain English, output the most appropriate shell command.
+Only output the shell command, nothing else. Do **NOT** include any explanations or additional text.
+
+User: {message}
+Command:"""
+    cmd = llm.invoke(prompt).strip()
+    return cmd if cmd else "echo 'No command generated'"
+
 
 
 
