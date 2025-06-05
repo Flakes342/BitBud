@@ -1,4 +1,5 @@
 from langchain_community.llms import Ollama
+from typing import Optional, TypedDict
 import json
 
 llm = Ollama(model="gemma3:4b")
@@ -24,7 +25,7 @@ Available functions:
    - If the user says something like “play *song name* on Spotify” or “open YouTube and search for *thing*”, include both `name` and `query`.
    - If they just say “open YouTube”, set `query` as "" or omit it.
 2. Only use `recommend_music` if the user explicitly asks for music suggestions or something like "recommend a song", "suggest music", etc. DO **NOT** use it for general conversation or vague requests.
-3. Only use `search_web` if the user **clearly asks** to look something up or search online. For example, “look up”, “search”, etc. DO **NOT** use it for general conversation or vague requests.
+3. Only use `search_web` if the user **clearly asks** to look something up, search online, or find information. For example, “look up”, “search”, etc. DO **NOT** use it for general conversation or vague requests.
 4. Use `fallback` for **ALL** other vague, conversational, or non-command messages (e.g., “My name is John”, “How are you?”, “This is great”, “Can you help?”, “I like pizza”).
 5. Use **exactly** the function names and argument formats as shown below.
 
@@ -45,7 +46,7 @@ User: suggest me a good song
 User: look up weather in Gurugram  
 → {{ "function": "search_web", "args": {{ "query": "weather in Gurugram" }} }}
 
-User: my name is Ayush  
+User: my name is Ayush
 → {{ "function": "fallback", "args": {{}} }}
 
 Now respond to this user message:
@@ -71,16 +72,20 @@ User: """ + user_input
         return {"function": "fallback", "args": {}, "error": str(e), "raw": raw_response}
 
 # --- Prompt builder
-def build_rag_prompt(user_input: str, context_docs: list[str]) -> str:
-    context_str = "\n".join(context_docs)
+def build_rag_prompt(user_input: str, memory_context_docs: list[str], about_context_docs: list[str]) -> str:
+    memory_str = "\n".join(memory_context_docs)
+    about_str = "\n".join(about_context_docs)
     return f"""
 You are BitBud, a concise and intelligent personal AI agent.
 
-You have access to your following past conversations and memories with the user. 
-{context_str}
+Here are the last few things you talked about:
+{memory_str}
+
+Furthermore, here is some additional context about the user:
+{about_str}
 
 Instruction:
-Given the user input below, respond in a short, factual, and helpful way using the above context **only if it's relevant**. Do NOT guess or overexplain. If no context applies, respond naturally but **briefly**.
+Given the user input below, respond in a short, factual, and helpful way using the above context **only if it's relevant**. Do **NOT** guess or overexplain. If no context applies, respond naturally and ask clarification questions.
 
 User: "{user_input}"
 """.strip()
