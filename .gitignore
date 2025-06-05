@@ -3,6 +3,7 @@ venv/
 
 # Ignore ChromaDB data directory
 bitbud_memory/
+chroma_about/
 
 # Python ignores
 __pycache__/
