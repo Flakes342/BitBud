@@ -1,7 +1,7 @@
 # BitBud
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/84724850-bf67-4fac-85c5-0d4cfed4f648"
+  <img width="500" height="400" src="https://github.com/user-attachments/assets/84724850-bf67-4fac-85c5-0d4cfed4f648"
  />
 </p>
 
