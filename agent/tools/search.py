@@ -1,58 +1,41 @@
 import subprocess
-import urllib.parse
-import asyncio
-from playwright.async_api import async_playwright
-from selenium import webdriver
 import time
+import undetected_chromedriver as uc
+from selenium.webdriver.common.by import By
+import os
 
 
-async def _scrape_google_ai_answer(query):
-    async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=True)
-        page = await browser.new_page()
-        encoded_query = urllib.parse.quote_plus(query)
-        search_url = f"https://www.google.com/search?q={encoded_query}"
-        await page.goto(search_url, timeout=60000)
-        await page.wait_for_timeout(5000)
-        print ("I am here")
+def scrape_gemini_answer(query):
+    chrome_path = "/usr/bin/google-chrome"
 
-        # Try finding Gemini-style AI Overview summary
-        try:
-            selectors_to_try = [
-                "div[data-attrid='wa:/description']",
-                "div[jscontroller]",
-                "div[data-md='139'] div span",  # fallback
-                "div.xpdopen",
-                "div[jsname='WbKHeb']",  # Often used for AI Overview
-                "div[data-attrid='wa:/description']",  # Sometimes general summary
-                "div[data-md='139']",
-                "div[class*='AIanswer']",  # backup generic
-                "div[jsname='K7J75c']",  # Gemini AI answer
-                "div[jsname='C4z5Vb']",  # Gemini AI answer
-                "div[jsname='C4z5Vb'] div[jsname='WbKHeb']",  # Gemini AI answer
-                "div[jsname='WbKHeb'] div[jsname='C4z5Vb']",  # Gemini AI answer        
-            ]
+    options = uc.ChromeOptions()
+    options.binary_location = chrome_path
+    options.add_argument("--disable-blink-features=AutomationControlled")
 
-            for selector in selectors_to_try:
-                box = await page.query_selector(selector)
-                if box:
-                    text = await box.inner_text()
-                    if len(text.strip()) > 20:
-                        await browser.close()
-                        return text.strip()
-            print ("No AI summary found.")
-            return "No AI summary found."
+    browser = uc.Chrome(options=options)
 
-        except Exception as e:
-            return f"Error: {e}"
-        finally:
-            await browser.close()
+
+    try:
+        search_url = f"https://www.google.com/search?q={query.replace(' ', '+')}"
+        browser.get(search_url)
+        time.sleep(5)
+
+        elems = browser.find_elements(By.CSS_SELECTOR, "div.LT6XE div.Ii22Cf div.oD6fhb span")
+
+        for elem in elems:
+            text = elem.text.strip()
+            if text and len(text.split()) > 8:
+                return text
+
+        return "No Gemini answer found."
+
+    finally:
+        browser.quit()
 
 
 def search_web(query):
-
-    summary = asyncio.run(_scrape_google_ai_answer(query))
-    if summary and summary!='No AI summary found.':
+    summary = scrape_gemini_answer(query)
+    if summary and summary!='No Gemini answer found.':
         return summary
 
     encoded_query = urllib.parse.quote_plus(query)
