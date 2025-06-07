@@ -5,6 +5,7 @@ from agent.tools.app_launcher import open_app
 from agent.tools.recommend import recommend_music
 from agent.tools.search import search_web
 from agent.tools.shell_command import linux_commands
+# from agent.tools.clock import clock
 from agent.llm import get_intent
 from agent.chromaMemory import handle_user_input 
 import urllib.parse
@@ -42,6 +43,8 @@ def route_input(state):
         return {"function": "search_web", "args": args}
     elif func == "linux_commands":
         return {"function": "linux_commands", "args": args}
+    # elif func == "handle_clock_command":
+    #     return {"function": "handle_clock_command", "args": args}
 
     # For anything else (remember, recall, fallback): RAG
     rag_response = handle_user_input(user_input)
@@ -66,6 +69,10 @@ def handle_search_web(state):
 def handle_linux_commands(state): 
     return {"output": linux_commands(state["args"].get("command", ""))}
 
+# def handle_clock(state):
+#     args = state["args"]
+#     return {"output": clock(args)}
+
 def fallback_handler(state): 
     return {"output": state.get("output", "Hmm, not sure what you meant.")}
 
@@ -78,6 +85,7 @@ def build_graph():
     graph.add_node("recommend_music", RunnableLambda(handle_recommend_music))
     graph.add_node("search_web", RunnableLambda(handle_search_web))
     graph.add_node("linux_commands", RunnableLambda(handle_linux_commands))
+    # graph.add_node("handle_clock_command", RunnableLambda(handle_handle_clock_command))
 
     graph.add_node("fallback", RunnableLambda(fallback_handler))
 
@@ -87,6 +95,7 @@ def build_graph():
         if func == "recommend_music": return "recommend_music"
         if func == "search_web": return "search_web"
         if func == "linux_commands": return "linux_commands"
+        # if func == "handle_clock_command": return "handle_clock_command"
         return "fallback"
 
     graph.set_entry_point("route_input")
@@ -96,6 +105,7 @@ def build_graph():
     graph.add_edge("recommend_music", END)
     graph.add_edge("search_web", END)
     graph.add_edge("linux_commands", END)
+    # graph.add_edge("handle_clock_command", END)
     graph.add_edge("fallback", END)
 
     return graph.compile()
