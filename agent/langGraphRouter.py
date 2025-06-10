@@ -28,7 +28,6 @@ def parse_args(args):
 # --- Route input to functions or fallback to RAG
 def route_input(state):
     user_input = state["input"]
-    # print(f"[Router] User Input: {user_input}")
     result = get_intent(user_input)
 
     func = result.get("function")

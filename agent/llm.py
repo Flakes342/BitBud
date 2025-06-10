@@ -28,14 +28,14 @@ Available functions:
    - If the user says something like “play *song name* on Spotify” or “open YouTube and search for *thing*”, include both `name` and `query`.
    - If they just say “open YouTube”, set `query` as "" or omit it.
 2. Only use `recommend_music` if the user explicitly asks for music suggestions or something like "recommend a song", "suggest music", etc. DO **NOT** use it for general conversation or vague requests.
-3. Only use `search_web` if the user **clearly asks** to look something up, search online, or find information. For example, “look up”, “search”, etc. DO **NOT** use it for general conversation or vague requests.
+3. Only use `search_web` if the user **clearly asks** to look something up, search online, or find information. For example, “look up”, “search”, etc. DO **NOT** use it for general conversation, vague requests or when user asks something that can be answered by the agent's memory.
 4. Use `run_linux_command` if the user asks for a specific shell command or task that can be done via terminal (e.g., “run ls -l”, “show current directory”, etc.). DO **NOT** use it for general conversation or vague requests.
 5. Use `clock` for any time-related task:
    - Alarm: “set alarm for 6:30” → `type: "alarm", hour, minute`
    - Timer: “start a 10-minute timer” → `type: "timer", seconds`
    - Current time: “what time is it?” → `type: "get_time"`
-6. Use `fallback` for **ALL** other vague, conversational, or non-command messages (e.g., “My name is John”, “How are you?”, “This is great”, “Can you help?”, “I like pizza”).
-7 Use **exactly** the function names and argument formats as shown below.
+6. Use `fallback` for **ALL** other vague, conversational, non-command messages, user asking questions about them and their lifr(e.g., “My name is John”, “How are you?”, “This is great”, “Can you help?”, “I like pizza”, "What is my..?").
+7 Use **exactly** the function names and argument formats as shown below. Always use the correct function name and argument structure.
 
 ### Examples:
 
@@ -75,7 +75,7 @@ User: """ + user_input
     try:
         # print ("trying to parse intent from user input:", user_input)
         raw_response = llm.invoke(prompt).strip()
-        print("[Raw LLM response]", raw_response)
+        # print("[Raw LLM response]", raw_response)
         
         # Find JSON substring inside if the LLM adds fluff
         json_start = raw_response.find("{")
