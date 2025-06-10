@@ -1,7 +1,0 @@
-2025-06-10 19:14:25,072 [INFO] Starting BitBud backend on port 5001
-2025-06-10 19:17:13,462 [INFO] User input received: What are my goals in life
-2025-06-10 19:19:07,449 [DEBUG] Reply generated: Okay, Ayush. It seems like you're aiming for a significant shift – landing a role at a top firm, becoming deeply skilled in Large Language Models, and streamlining your daily workflow through automation. You're clearly driven to build upon your Data Science and Machine Learning experience. Is there anything specific you’d like to explore further regarding these goals?
-2025-06-10 19:19:35,693 [INFO] User input received: What is my moms name?
-2025-06-10 19:21:13,275 [DEBUG] Reply generated: Sarla Tanwar.
-2025-06-10 19:21:35,254 [INFO] User input received: What is my name?
-2025-06-10 19:23:16,736 [DEBUG] Reply generated: Your name is Ayush Tanwar.
