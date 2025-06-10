@@ -128,6 +128,12 @@ def cleanup_old_memories(days_to_keep=45):
 
 
 def store_to_memory(text: str, metadata: dict = None):
+
+    # Skip trivial messages
+    if not is_worth_storing(text):
+        print(f"[Memory] Skipped storing trivial message: {text}")
+        return
+
     context = generate_context_summary(text)
 
     # Prepare metadata with session info
@@ -190,8 +196,6 @@ def retrieve_context(query: str, k=5, score_threshold=0.75) -> list[str]:
 def retrieve_about_context(query: str, k=3) -> list[str]:
     results = about_store.similarity_search(query, k=k)
     return [doc.page_content for doc in results]
-
-
 
 
 
