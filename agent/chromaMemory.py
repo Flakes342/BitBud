@@ -1,5 +1,6 @@
 import os
 import uuid
+import logging
 import chromadb
 import requests
 from chromadb import Client
@@ -11,21 +12,41 @@ from langchain.embeddings import HuggingFaceEmbeddings
 from agent.llm import build_rag_prompt, generate_context_summary
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
-embedding_func = HuggingFaceEmbeddings(
-    model_name="/home/ayush/Documents/bitbud/models/paraphrase-MiniLM-L3-v2/"
-)
 
-vectorstore = Chroma(
-    collection_name="bitbud",
-    embedding_function=embedding_func,
-    persist_directory="./bitbud_memory"
-)
+logger = logging.getLogger(__name__)
 
-about_store = Chroma(
-    collection_name="about_user",
-    embedding_function=embedding_func,
-    persist_directory="./chroma_about"
-)
+try:
+    embedding_func = HuggingFaceEmbeddings(
+        model_name="/home/ayush/Documents/bitbud/models/paraphrase-MiniLM-L3-v2/"
+    )
+    logger.info("Embedding function initialized successfully")
+except Exception as e:
+    logger.error(f"Failed to initialize embedding function: {e}")
+    embedding_func = None
+
+vectorstore = None
+about_store = None
+
+try:
+    vectorstore = Chroma(
+        collection_name="bitbud",
+        embedding_function=embedding_func,
+        persist_directory="./bitbud_memory"
+    )
+    logger.info("Main vectorstore initialized successfully")
+except Exception as e:
+    logger.error(f"Failed to initialize main vectorstore: {e}")
+
+try:
+    about_store = Chroma(
+        collection_name="about_user",
+        embedding_function=embedding_func,
+        persist_directory="./chroma_about"
+    )
+    logger.info("About vectorstore initialized successfully")
+except Exception as e:
+    logger.error(f"Failed to initialize about vectorstore: {e}")
+
 
 ABOUT_FILE = "ABOUT.md"
 _about_last_modified = None
@@ -201,32 +222,37 @@ def retrieve_about_context(query: str, k=3) -> list[str]:
 
 # --- Main handler
 def handle_user_input(user_input: str) -> str:
-    
-    # Load ABOUT.md if it changed
-    _load_about_if_changed()
-    
-    # Periodic cleanup (every 100 interactions)
-    if _last_interaction_time and datetime.now().hour == 3:  # 3 AM cleanup
-        cleanup_old_memories()
 
-    # Store user input (with filtering)
-    store_to_memory(user_input)
+    try:
+        # Load ABOUT.md if it changed
+        _load_about_if_changed()
+        
+        # Periodic cleanup (every 100 interactions)
+        if _last_interaction_time and datetime.now().hour == 3:  # 3 AM cleanup
+            cleanup_old_memories()
 
-    # Retrieve relevant context
-    memory_context = retrieve_context(user_input)
-    about_context = retrieve_about_context(user_input)
+        # Store user input (with filtering)
+        store_to_memory(user_input)
 
-    prompt = build_rag_prompt(user_input, memory_context, about_context)
+        # Retrieve relevant context
+        memory_context = retrieve_context(user_input)
+        about_context = retrieve_about_context(user_input)
 
-    res = requests.post("http://localhost:11434/api/generate", json={
-        "model": "gemma3:4b",
-        "prompt": prompt,
-        "stream": False
-    })
+        prompt = build_rag_prompt(user_input, memory_context, about_context)
 
-    reply = res.json().get("response", "...").strip()
+        res = requests.post("http://localhost:11434/api/generate", json={
+            "model": "gemma3:4b",
+            "prompt": prompt,
+            "stream": False
+        })
 
-    # Store reply (with filtering)
-    store_to_memory(reply, metadata={"source": "BitBud"})
+        reply = res.json().get("response", "...").strip()
 
-    return reply
+        # Store reply (with filtering)
+        store_to_memory(reply, metadata={"source": "BitBud"})
+
+        return reply
+
+    except Exception as e:
+        logger.error(f"Error in handle_user_input: {e}")
+        return "I encountered an error processing your request. Please try rephrasing or try again later."

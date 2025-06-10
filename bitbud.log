@@ -1,0 +1,114 @@
+2025-06-10 19:14:25,072 [INFO] Starting BitBud backend on port 5001
+2025-06-10 19:17:13,462 [INFO] User input received: What are my goals in life
+2025-06-10 19:19:07,449 [DEBUG] Reply generated: Okay, Ayush. It seems like you're aiming for a significant shift – landing a role at a top firm, becoming deeply skilled in Large Language Models, and streamlining your daily workflow through automation. You're clearly driven to build upon your Data Science and Machine Learning experience. Is there anything specific you’d like to explore further regarding these goals?
+2025-06-10 19:19:35,693 [INFO] User input received: What is my moms name?
+2025-06-10 19:21:13,275 [DEBUG] Reply generated: Sarla Tanwar.
+2025-06-10 19:21:35,254 [INFO] User input received: What is my name?
+2025-06-10 19:23:16,736 [DEBUG] Reply generated: Your name is Ayush Tanwar.
+2025-06-10 19:41:34,760 [INFO] Starting BitBud backend on port 5001
+2025-06-10 19:42:08,142 [INFO] User input received: How many days are left until my birthday?
+2025-06-10 19:43:09,874 [ERROR] Exception in /ask endpoint
+Traceback (most recent call last):
+  File "/home/ayush/Documents/bitbud/backend/main.py", line 36, in ask
+    result = graph.invoke({"input": user_input})
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langgraph/pregel/__init__.py", line 2719, in invoke
+    for chunk in self.stream(
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langgraph/pregel/__init__.py", line 2436, in stream
+    for _ in runner.tick(
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_core/runnables/base.py", line 4771, in invoke
+    return self._call_with_config(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_core/runnables/base.py", line 1940, in _call_with_config
+    context.run(
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_core/runnables/config.py", line 428, in call_func_with_variable_args
+    return func(input, **kwargs)  # type: ignore[call-arg]
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_core/runnables/base.py", line 4629, in _invoke
+    output = call_func_with_variable_args(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_core/runnables/config.py", line 428, in call_func_with_variable_args
+    return func(input, **kwargs)  # type: ignore[call-arg]
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/agent/langGraphRouter.py", line 66, in handle_search_web
+    return {"output": search_web(state["args"].get("query", ""))}
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/agent/tools/search.py", line 41, in search_web
+    encoded_query = urllib.parse.quote_plus(query)
+                    ^^^^^^
+NameError: name 'urllib' is not defined. Did you forget to import 'urllib'
+During task with name 'search_web' and id 'c02251ab-47e1-7fcc-0898-51e5e196b3c3'
+2025-06-10 19:53:21,320 [INFO] Starting BitBud backend on port 5001
+2025-06-10 19:53:28,241 [INFO] User input received: How many days are left until my birthday?
+2025-06-10 19:54:30,552 [ERROR] Exception in /ask endpoint
+Traceback (most recent call last):
+  File "/home/ayush/Documents/bitbud/backend/main.py", line 36, in ask
+    result = graph.invoke({"input": user_input})
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langgraph/pregel/__init__.py", line 2719, in invoke
+    for chunk in self.stream(
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langgraph/pregel/__init__.py", line 2436, in stream
+    for _ in runner.tick(
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_core/runnables/base.py", line 4771, in invoke
+    return self._call_with_config(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_core/runnables/base.py", line 1940, in _call_with_config
+    context.run(
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_core/runnables/config.py", line 428, in call_func_with_variable_args
+    return func(input, **kwargs)  # type: ignore[call-arg]
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_core/runnables/base.py", line 4629, in _invoke
+    output = call_func_with_variable_args(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_core/runnables/config.py", line 428, in call_func_with_variable_args
+    return func(input, **kwargs)  # type: ignore[call-arg]
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/agent/langGraphRouter.py", line 66, in handle_search_web
+    return {"output": search_web(state["args"].get("query", ""))}
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/agent/tools/search.py", line 37, in search_web
+    summary = scrape_gemini_answer(query)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/agent/tools/search.py", line 23, in scrape_gemini_answer
+    elems = browser.find_elements(By.CSS_SELECTOR, "div.LT6XE div.Ii22Cf div.oD6fhb span")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/selenium/webdriver/remote/webdriver.py", line 952, in find_elements
+    return self.execute(Command.FIND_ELEMENTS, {"using": by, "value": value})["value"] or []
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/selenium/webdriver/remote/webdriver.py", line 447, in execute
+    self.error_handler.check_response(response)
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/selenium/webdriver/remote/errorhandler.py", line 232, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.InvalidSessionIdException: Message: invalid session id: session deleted as the browser has closed the connection
+from disconnected: not connected to DevTools
+  (Session info: chrome=137.0.7151.68)
+Stacktrace:
+#0 0x56839fb5fc4a <unknown>
+#1 0x56839f6056e0 <unknown>
+#2 0x56839f5ebdfe <unknown>
+#3 0x56839f614264 <unknown>
+#4 0x56839f6858af <unknown>
+#5 0x56839f6a2c6c <unknown>
+#6 0x56839f67cc03 <unknown>
+#7 0x56839f64947b <unknown>
+#8 0x56839f64a0e1 <unknown>
+#9 0x56839fb243fb <unknown>
+#10 0x56839fb2832f <unknown>
+#11 0x56839fb0bf39 <unknown>
+#12 0x56839fb28ec8 <unknown>
+#13 0x56839faf068f <unknown>
+#14 0x56839fb4d2b8 <unknown>
+#15 0x56839fb4d496 <unknown>
+#16 0x56839fb5eb26 <unknown>
+#17 0x7792f809caa4 <unknown>
+#18 0x7792f8129c3c <unknown>
+
+During task with name 'search_web' and id '23f5462a-4040-bf5c-14e0-2fa226be7b8e'
+2025-06-10 21:52:56,440 - __main__ - INFO - BitBud graph initialized successfully
+2025-06-10 21:52:56,440 - __main__ - INFO - Starting BitBud backend on port 5001
+2025-06-10 21:52:56,443 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5001
+2025-06-10 21:52:56,443 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-06-10 21:53:25,735 - __main__ - INFO - Processing user input: What is my name?...
+2025-06-10 21:55:08,510 - __main__ - INFO - Generated reply: Your name is Ayush Tanwar....
+2025-06-10 21:55:08,534 - werkzeug - INFO - 127.0.0.1 - - [10/Jun/2025 21:55:08] "POST /ask HTTP/1.1" 200 -
