@@ -1,5 +1,8 @@
 import subprocess
+import logging
 from agent.llm import text_to_shell_command
+
+logger = logging.getLogger(__name__)
 
 def run_shell_command(command: str) -> str:
     """Execute shell command with comprehensive error handling"""

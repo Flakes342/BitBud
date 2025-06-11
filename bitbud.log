@@ -112,3 +112,64 @@ During task with name 'search_web' and id '23f5462a-4040-bf5c-14e0-2fa226be7b8e'
 2025-06-10 21:53:25,735 - __main__ - INFO - Processing user input: What is my name?...
 2025-06-10 21:55:08,510 - __main__ - INFO - Generated reply: Your name is Ayush Tanwar....
 2025-06-10 21:55:08,534 - werkzeug - INFO - 127.0.0.1 - - [10/Jun/2025 21:55:08] "POST /ask HTTP/1.1" 200 -
+2025-06-11 23:50:34,872 - __main__ - INFO - BitBud graph initialized successfully
+2025-06-11 23:50:34,873 - __main__ - INFO - Starting BitBud backend on port 5001
+2025-06-11 23:50:34,875 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5001
+2025-06-11 23:50:34,875 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-06-11 23:50:41,223 - __main__ - INFO - Processing user input: Run a linux command to check no of fiels on my des...
+2025-06-11 23:51:31,175 - __main__ - ERROR - Error processing request: name 'logger' is not defined
+2025-06-11 23:51:31,180 - __main__ - ERROR - Traceback: Traceback (most recent call last):
+  File "/home/ayush/Documents/bitbud/backend/agent/tools/shell_command.py", line 66, in linux_commands
+    logger.info(f"Generating shell command for: {message}")
+    ^^^^^^
+NameError: name 'logger' is not defined
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/ayush/Documents/bitbud/backend/main.py", line 54, in ask
+    result = graph.invoke({"input": user_input})
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langgraph/pregel/__init__.py", line 2719, in invoke
+    for chunk in self.stream(
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langgraph/pregel/__init__.py", line 2436, in stream
+    for _ in runner.tick(
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_core/runnables/base.py", line 4771, in invoke
+    return self._call_with_config(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_core/runnables/base.py", line 1940, in _call_with_config
+    context.run(
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_core/runnables/config.py", line 428, in call_func_with_variable_args
+    return func(input, **kwargs)  # type: ignore[call-arg]
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_core/runnables/base.py", line 4629, in _invoke
+    output = call_func_with_variable_args(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_core/runnables/config.py", line 428, in call_func_with_variable_args
+    return func(input, **kwargs)  # type: ignore[call-arg]
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/agent/langGraphRouter.py", line 69, in handle_linux_commands
+    return {"output": linux_commands(state["args"].get("command", ""))}
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/agent/tools/shell_command.py", line 98, in linux_commands
+    logger.error(f"Error in linux_commands: {e}")
+    ^^^^^^
+NameError: name 'logger' is not defined
+During task with name 'linux_commands' and id '7ee288cf-1738-6fb9-dbd4-a66896f75df1'
+
+2025-06-11 23:51:31,181 - werkzeug - INFO - 127.0.0.1 - - [11/Jun/2025 23:51:31] "[35m[1mPOST /ask HTTP/1.1[0m" 500 -
+2025-06-11 23:52:49,668 - __main__ - INFO - BitBud graph initialized successfully
+2025-06-11 23:52:49,668 - __main__ - INFO - Starting BitBud backend on port 5001
+2025-06-11 23:52:49,670 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5001
+2025-06-11 23:52:49,670 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-06-11 23:52:53,537 - __main__ - INFO - Processing user input: Run a linux command to check no of fiels on my des...
+2025-06-11 23:53:43,978 - agent.tools.shell_command - INFO - Generating shell command for: ls -l ~/Desktop
+2025-06-11 23:53:47,616 - agent.tools.shell_command - INFO - Generated shell command: ls -l ~/Desktop
+2025-06-11 23:53:47,616 - agent.tools.shell_command - INFO - Executing shell command: ls -l ~/Desktop
+2025-06-11 23:53:47,620 - agent.tools.shell_command - INFO - Command completed: ls -l ~/Desktop
+2025-06-11 23:53:47,620 - __main__ - INFO - Generated reply: Command executed successfully:
+total 16
+-rwxrwxr-x...
+2025-06-11 23:53:47,621 - werkzeug - INFO - 127.0.0.1 - - [11/Jun/2025 23:53:47] "POST /ask HTTP/1.1" 200 -
