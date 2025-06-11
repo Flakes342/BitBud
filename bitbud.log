@@ -173,3 +173,44 @@ During task with name 'linux_commands' and id '7ee288cf-1738-6fb9-dbd4-a66896f75
 total 16
 -rwxrwxr-x...
 2025-06-11 23:53:47,621 - werkzeug - INFO - 127.0.0.1 - - [11/Jun/2025 23:53:47] "POST /ask HTTP/1.1" 200 -
+2025-06-12 00:16:38,110 - __main__ - INFO - BitBud graph initialized successfully
+2025-06-12 00:16:38,111 - __main__ - INFO - Starting BitBud backend on port 5001
+2025-06-12 00:16:38,112 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5001
+2025-06-12 00:16:38,112 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-06-12 00:17:31,910 - __main__ - INFO - Processing user input: When did Germany gain its independence?...
+2025-06-12 00:18:26,090 - agent.tools.search - INFO - Web search requested for: When did Germany gain its independence?
+2025-06-12 00:18:26,090 - agent.tools.search - INFO - Attempting to scrape Google AI answer for: When did Germany gain its independence?
+2025-06-12 00:18:27,446 - undetected_chromedriver.patcher - INFO - patching driver executable /home/ayush/.local/share/undetected_chromedriver/undetected_chromedriver
+2025-06-12 00:18:28,908 - uc - INFO - setting properties for headless
+2025-06-12 00:18:31,050 - agent.tools.search - WARNING - No AI answer found with any selector
+2025-06-12 00:18:31,159 - agent.tools.search - INFO - Opened search in firefox
+2025-06-12 00:18:31,163 - __main__ - INFO - Generated reply: Opened web search for: When did Germany gain its i...
+2025-06-12 00:18:31,177 - werkzeug - INFO - 127.0.0.1 - - [12/Jun/2025 00:18:31] "POST /ask HTTP/1.1" 200 -
+2025-06-12 00:42:00,669 - uc - INFO - ensuring close
+2025-06-12 00:42:12,462 - __main__ - INFO - BitBud graph initialized successfully
+2025-06-12 00:42:12,462 - __main__ - INFO - Starting BitBud backend on port 5001
+2025-06-12 00:42:12,464 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5001
+2025-06-12 00:42:12,464 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-06-12 00:42:13,855 - __main__ - INFO - Processing user input: When did Germany gain its independence?...
+2025-06-12 00:43:11,284 - undetected_chromedriver.patcher - INFO - patching driver executable /home/ayush/.local/share/undetected_chromedriver/undetected_chromedriver
+2025-06-12 00:43:20,765 - __main__ - INFO - Generated reply: Searching for: When did Germany gain its independe...
+2025-06-12 00:43:20,808 - werkzeug - INFO - 127.0.0.1 - - [12/Jun/2025 00:43:20] "POST /ask HTTP/1.1" 200 -
+2025-06-12 00:44:14,103 - __main__ - INFO - BitBud graph initialized successfully
+2025-06-12 00:44:14,104 - __main__ - INFO - Starting BitBud backend on port 5001
+2025-06-12 00:44:14,107 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5001
+2025-06-12 00:44:14,107 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-06-12 00:44:15,581 - __main__ - INFO - Processing user input: When did Germany gain its independence?...
+2025-06-12 00:45:05,890 - undetected_chromedriver.patcher - INFO - patching driver executable /home/ayush/.local/share/undetected_chromedriver/undetected_chromedriver
+2025-06-12 00:45:12,839 - __main__ - INFO - Generated reply: Germany's path to independence involved two distin...
+2025-06-12 00:45:12,840 - werkzeug - INFO - 127.0.0.1 - - [12/Jun/2025 00:45:12] "POST /ask HTTP/1.1" 200 -
+2025-06-12 02:04:47,078 - __main__ - INFO - BitBud graph initialized successfully
+2025-06-12 02:04:47,078 - __main__ - INFO - Starting BitBud backend on port 5001
+2025-06-12 02:04:47,080 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5001
+2025-06-12 02:04:47,080 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-06-12 02:05:11,999 - __main__ - INFO - Processing user input: set a time for 10 seconds to remind me to kiss my ...
+2025-06-12 02:06:16,222 - __main__ - INFO - Generated reply: Timer set for 60 seconds — kiss wife...
+2025-06-12 02:06:16,223 - werkzeug - INFO - 127.0.0.1 - - [12/Jun/2025 02:06:16] "POST /ask HTTP/1.1" 200 -

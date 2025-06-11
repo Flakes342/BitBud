@@ -1,8 +1,9 @@
-import subprocess
+import os
 import time
+import subprocess
+import urllib.parse
 import undetected_chromedriver as uc
 from selenium.webdriver.common.by import By
-import os
 
 
 def scrape_gemini_answer(query):
@@ -34,12 +35,17 @@ def scrape_gemini_answer(query):
 
 
 def search_web(query):
-    summary = scrape_gemini_answer(query)
-    if summary and summary!='No Gemini answer found.':
-        return summary
-
-    encoded_query = urllib.parse.quote_plus(query)
-    url = f"https://www.google.com/search?q={encoded_query}"
-    cmd = f"firefox {url}"
-    subprocess.Popen(cmd, shell=True)
-    return f"Searching for: {query}"
+    try:
+        summary = scrape_gemini_answer(query)
+        if summary and summary!='No Gemini answer found.':
+            return summary
+    except Exception as e:
+        print(f"Error scraping Gemini answer: {e}")
+        try:
+            encoded_query = urllib.parse.quote_plus(query)
+            url = f"https://www.google.com/search?q={encoded_query}"
+            cmd = f"firefox {url}"
+            subprocess.Popen(cmd, shell=True)
+            return f"Searching for: {query}"
+        except Exception as e:
+            return f"Failed to open browser for search: {str(e)}"

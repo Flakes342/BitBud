@@ -58,6 +58,9 @@ User: look up weather in Gurugram
 User: run a command to do something in terminal  
 → {{ "function": "linux_commands", "args": {"command": "<bash-comamnd>"} }}
 
+User: What time is it? 
+→ {{ "function": "clock", "args": {{ "type": "get_time"}} }}
+
 User: I want to take some break, set a timer for 10 minutes 
 → {{ "function": "clock", "args": {{ "type": "timer", "seconds": 600, "objective": "break time" }} }}
 
@@ -129,7 +132,6 @@ Summary:
 """
     summary = llm.invoke(prompt).strip()
     return None if summary.lower() == "none" else summary
-
 
 
 def text_to_shell_command(message: str) -> str:
