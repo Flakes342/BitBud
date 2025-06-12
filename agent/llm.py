@@ -67,6 +67,18 @@ User: I want to take some break, set a timer for 10 minutes
 User: set alarm for 6:30 AM to wake up
 → {{ "function": "clock", "args": {{ "type": "alarm", "hour": 6, "minute": 30, "objective": "wake up" }} }}
 
+User: list all alarms / get alarms / what alarms do I have?
+→ {{ "function": "clock", "args": {{ "type": "get_active_alarms" }} }}
+
+User: list all timers / get timers / what timers do I have?
+→ {{ "function": "clock", "args": {{ "type": "get_active_timers" }} }}
+
+User: clear all alarms
+→ {{ "function": "clock", "args": {{ "type": "clear_alarms" }} }}
+
+User: clear all timers
+→ {{ "function": "clock", "args": {{ "type": "clear_timers" }} }}
+
 User: my name is Ayush
 → {{ "function": "fallback", "args": {{}} }}
 

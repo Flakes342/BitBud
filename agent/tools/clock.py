@@ -51,13 +51,13 @@ def set_timer(seconds, objective=""):
         return f"[ERROR] Invalid seconds format: {str(e)}"
     
     if seconds == 0:
-        print(f"⏳ Timer Done: {objective or 'Time is up!'}")
+        print(f"Timer Done: {objective or 'Time is up!'}")
         return f"Timer completed immediately — {objective}"
     
     def timer_thread():
         try:
             time.sleep(seconds)
-            print(f"⏳ Timer Done: {objective or 'Time is up!'}")
+            print(f"Timer Done: {objective or 'Time is up!'}")
         except Exception as e:
             print(f"[ERROR] Error in timer thread: {str(e)}")
     
@@ -69,11 +69,15 @@ def set_timer(seconds, objective=""):
         return f"[ERROR] Error setting timer: {str(e)}"
 
 def get_active_alarms():
-    """Return list of currently set alarms"""
+    """Returns list of currently set alarms"""
+    if not alarms:
+        return "No active alarms"
     return alarms
 
 def get_active_timers():
-    """Return list of currently running timers (note: this is just what was set, not remaining time)"""
+    """Returns list of currently running timers (note: this is just what was set, not remaining time)"""
+    if not timers:
+        return "No active timers"
     return timers
 
 def clear_alarms():
