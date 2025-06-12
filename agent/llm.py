@@ -19,6 +19,7 @@ Available functions:
 - search_web(query: str)
 - linux_commands(command: str)
 - clock(type: str, hour: Optional[int], minute: Optional[int], seconds: Optional[int], objective: Optional[str])
+- system_control(type: str)
 
 - fallback()
 
@@ -31,16 +32,17 @@ Available functions:
 3. Only use `search_web` if the user **clearly asks** to look something up, search online, or find information. For example, uch as “look up”, “search online”, “Google”, “find on web”, or “get info about X online”. DO **NOT** use it for general conversation, memeory based requests, vague requests or when user asks something that can be answered by the agent's memory.
 4. Use `run_linux_command` if the user asks for a specific shell command or task that can be done via terminal (e.g., “run ls -l”, “show current directory”, etc.). DO **NOT** use it for general conversation or vague requests.
 5. Use `clock` for any time-related task:
-   - Alarm: “set alarm for 6:30” → `type: "alarm", hour, minute`
-   - Timer: “start a 10-minute timer” → `type: "timer", seconds`
+   - Alarm: “set alarm for 6:30” → `type: "alarm", hour, minute, objective`
+   - Timer: “start a 10-minute timer” → `type: "timer", seconds, objective`
    - Current time: “what time is it?” → `type: "get_time"`
    - List alarms: “list all alarms” → `type: "get_active_alarms"`
    - List timers: “list all timers” → `type: "get_active_timers"`
    - Clear alarms: “clear all alarms” → `type: "clear_alarms"`
    - Clear timers: “clear all timers” → `type: "clear_timers"`
-6. Use `fallback` for **ALL** other vague, conversational, non-command messages, memory based, user asking questions about them and their life (e.g., “My name is John”, “How are you?”, “This is great”, “Can you help?”, “I like pizza”, "What is my..?").
-7. You have an ABOUT.md file that contains information about the user. If the user asks something that can be answered by the agent's memory, use the `fallback` function to retrieve the information from the memory and return it as a response.
-8. Use **exactly** the function names and argument formats as shown below. Always use the correct function name and argument structure.
+6. Use `system_control` for any system-related tasks like getting system info, managing processes, etc. For example, “get system info”, “list running processes”, "kill a proceess", "abort a job" etc.
+7. Use `fallback` for **ALL** other vague, conversational, non-command messages, memory based, user asking questions about them and their life (e.g., “My name is John”, “How are you?”, “This is great”, “Can you help?”, “I like pizza”, "What is my..?").
+8. You have an ABOUT.md file that contains information about the user. If the user asks something that can be answered by the agent's memory, use the `fallback` function to retrieve the information from the memory and return it as a response.
+9. Use **exactly** the function names and argument formats as shown below. Always use the correct function name and argument structure.
 
 ### Examples:
 
@@ -82,6 +84,15 @@ User: clear all alarms
 
 User: clear all timers
 → {{ "function": "clock", "args": {{ "type": "clear_timers" }} }}
+
+User: get me information about my system
+→ {{ "function": "system_control", "args": {{ "type": "get_system_info" }} }}
+
+User: list running processes
+→ {{ "function": "system_control", "args": {{ "type": "processes" }} }}
+
+User: kill process with PID 1234
+→ {{ "function": "system_control", "args": {{ "type": "kill_process", "process": 1234 }} }}
 
 User: my name is Ayush
 → {{ "function": "fallback", "args": {{}} }}

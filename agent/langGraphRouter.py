@@ -1,14 +1,16 @@
 import urllib.parse
 from typing import TypedDict
+from langchain_core.runnables import RunnableLambda
+from langgraph.graph import StateGraph, END
+from agent.chromaMemory import handle_user_input 
+
 from agent.llm import get_intent
 from agent.tools.clock import clock
 from agent.tools.search import search_web
-from langgraph.graph import StateGraph, END
 from agent.tools.app_launcher import open_app
-from agent.chromaMemory import handle_user_input 
 from agent.tools.recommend import recommend_music
-from langchain_core.runnables import RunnableLambda
 from agent.tools.shell_command import linux_commands
+from agent.tools.system_control import system_control
 
 
 # --- BitBud state
@@ -44,6 +46,8 @@ def route_input(state):
         return {"function": "linux_commands", "args": args}
     elif func == "clock":
         return {"function": "clock", "args": args}
+    elif func == "system_control":
+        return {"function": "system_control", "args": args}
 
     # For anything else (remember, recall, fallback): RAG
     rag_response = handle_user_input(user_input)
@@ -72,6 +76,10 @@ def handle_clock(state):
     args = state["args"]
     return {"output": clock(args)}
 
+def handle_system_control(state):
+    args = state["args"]
+    return {"output": system_control(args)}
+
 def fallback_handler(state): 
     return {"output": state.get("output", "Hmm, not sure what you meant.")}
 
@@ -85,6 +93,8 @@ def build_graph():
     graph.add_node("search_web", RunnableLambda(handle_search_web))
     graph.add_node("linux_commands", RunnableLambda(handle_linux_commands))
     graph.add_node("clock", RunnableLambda(handle_clock))
+    graph.add_node("system_control", RunnableLambda(handle_system_control))
+
 
     graph.add_node("fallback", RunnableLambda(fallback_handler))
 
@@ -95,6 +105,7 @@ def build_graph():
         if func == "search_web": return "search_web"
         if func == "linux_commands": return "linux_commands"
         if func == "clock": return "clock"
+        if func == "system_control": return "system_control"
         return "fallback"
 
     graph.set_entry_point("route_input")
@@ -105,6 +116,7 @@ def build_graph():
     graph.add_edge("search_web", END)
     graph.add_edge("linux_commands", END)
     graph.add_edge("clock", END)
+    graph.add_edge("system_control", END)
     graph.add_edge("fallback", END)
 
     return graph.compile()

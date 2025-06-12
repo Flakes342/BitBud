@@ -42,11 +42,11 @@ def open_app(app_name: str, query: str = ""):
         return "Opening terminal..."
     
     elif app_name == "spotify":
-        web_url = f"https://open.spotify.com/search/{urllib.parse.quote_plus(query)}"
-        subprocess.Popen(["firefox", web_url])
-        return (
-            f"No active Spotify device found. Opened Spotify Web Player for '{query}'. "
-            "Please play a song manually once to activate the device.")
+        try:
+            subprocess.Popen(cmd.split())
+            return f"Opening {app_name}..."
+        except Exception as e:
+            return f"Failed to open {app_name}: {e}"
 
     elif app_name == "youtube":
         if query:
