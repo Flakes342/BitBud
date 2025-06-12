@@ -101,9 +101,9 @@ def clock(args: dict):
         return set_alarm(args.get("hour"), args.get("minute"), args.get("objective", ""))
     elif cmd_type == "timer":
         return set_timer(args.get("seconds"), args.get("objective", ""))
-    elif cmd_type == "list_alarms":
+    elif cmd_type == "get_active_alarms":
         return f"Active alarms: {get_active_alarms()}"
-    elif cmd_type == "list_timers":
+    elif cmd_type == "get_active_timers":
         return f"Active timers: {get_active_timers()}"
     elif cmd_type == "clear_alarms":
         return clear_alarms()

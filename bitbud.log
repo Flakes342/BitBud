@@ -231,3 +231,157 @@ total 16
 2025-06-12 16:11:23,706 - agent.chromaMemory - ERROR - Error in handle_user_input: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
 2025-06-12 16:11:23,719 - __main__ - INFO - Generated reply: I encountered an error processing your request. Pl...
 2025-06-12 16:11:23,720 - werkzeug - INFO - 127.0.0.1 - - [12/Jun/2025 16:11:23] "POST /ask HTTP/1.1" 200 -
+2025-06-12 16:19:53,830 - __main__ - INFO - BitBud graph initialized successfully
+2025-06-12 16:19:53,831 - __main__ - INFO - Starting BitBud backend on port 5001
+2025-06-12 16:19:53,832 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5001
+2025-06-12 16:19:53,833 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-06-12 16:20:11,106 - __main__ - INFO - Processing user input: tell me my active alarms...
+2025-06-12 16:21:02,946 - agent.chromaMemory - ERROR - Error in handle_user_input: Ollama call failed with status code 500. Details: {"error":"model requires more system memory (6.1 GiB) than is available (4.0 GiB)"}
+2025-06-12 16:21:02,949 - __main__ - INFO - Generated reply: I encountered an error processing your request. Pl...
+2025-06-12 16:21:02,950 - werkzeug - INFO - 127.0.0.1 - - [12/Jun/2025 16:21:02] "POST /ask HTTP/1.1" 200 -
+2025-06-12 16:24:53,434 - __main__ - INFO - Processing user input: list all active alarms...
+2025-06-12 16:24:53,556 - __main__ - ERROR - Error processing request: cannot access local variable 'raw_response' where it is not associated with a value
+2025-06-12 16:24:53,563 - __main__ - ERROR - Traceback: Traceback (most recent call last):
+  File "/home/ayush/Documents/bitbud/backend/agent/llm.py", line 96, in get_intent
+    raw_response = llm.invoke(prompt).strip()
+                   ^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_core/language_models/llms.py", line 389, in invoke
+    self.generate_prompt(
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_core/language_models/llms.py", line 766, in generate_prompt
+    return self.generate(prompt_strings, stop=stop, callbacks=callbacks, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_core/language_models/llms.py", line 973, in generate
+    return self._generate_helper(
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_core/language_models/llms.py", line 792, in _generate_helper
+    self._generate(
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_community/llms/ollama.py", line 437, in _generate
+    final_chunk = super()._stream_with_aggregation(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_community/llms/ollama.py", line 349, in _stream_with_aggregation
+    for stream_resp in self._create_generate_stream(prompt, stop, **kwargs):
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_community/llms/ollama.py", line 194, in _create_generate_stream
+    yield from self._create_stream(
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_community/llms/ollama.py", line 273, in _create_stream
+    raise ValueError(
+ValueError: Ollama call failed with status code 500. Details: {"error":"model requires more system memory (6.1 GiB) than is available (4.3 GiB)"}
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/ayush/Documents/bitbud/backend/main.py", line 54, in ask
+    result = graph.invoke({"input": user_input})
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langgraph/pregel/__init__.py", line 2719, in invoke
+    for chunk in self.stream(
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langgraph/pregel/__init__.py", line 2436, in stream
+    for _ in runner.tick(
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_core/runnables/base.py", line 4771, in invoke
+    return self._call_with_config(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_core/runnables/base.py", line 1940, in _call_with_config
+    context.run(
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_core/runnables/config.py", line 428, in call_func_with_variable_args
+    return func(input, **kwargs)  # type: ignore[call-arg]
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_core/runnables/base.py", line 4629, in _invoke
+    output = call_func_with_variable_args(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_core/runnables/config.py", line 428, in call_func_with_variable_args
+    return func(input, **kwargs)  # type: ignore[call-arg]
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/agent/langGraphRouter.py", line 31, in route_input
+    result = get_intent(user_input)
+             ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/agent/llm.py", line 107, in get_intent
+    return {"function": "fallback", "args": {}, "error": str(e), "raw": raw_response}
+                                                                        ^^^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'raw_response' where it is not associated with a value
+During task with name 'route_input' and id 'ff5ee67c-ef86-9d8f-fd5f-c7ac2f84e262'
+
+2025-06-12 16:24:53,563 - werkzeug - INFO - 127.0.0.1 - - [12/Jun/2025 16:24:53] "[35m[1mPOST /ask HTTP/1.1[0m" 500 -
+2025-06-12 16:25:07,115 - __main__ - INFO - BitBud graph initialized successfully
+2025-06-12 16:25:07,115 - __main__ - INFO - Starting BitBud backend on port 5001
+2025-06-12 16:25:07,117 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5001
+2025-06-12 16:25:07,117 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-06-12 16:25:11,487 - __main__ - INFO - Processing user input: list all active alarms...
+2025-06-12 16:25:11,613 - __main__ - ERROR - Error processing request: cannot access local variable 'raw_response' where it is not associated with a value
+2025-06-12 16:25:11,615 - __main__ - ERROR - Traceback: Traceback (most recent call last):
+  File "/home/ayush/Documents/bitbud/backend/agent/llm.py", line 96, in get_intent
+    raw_response = llm.invoke(prompt).strip()
+                   ^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_core/language_models/llms.py", line 389, in invoke
+    self.generate_prompt(
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_core/language_models/llms.py", line 766, in generate_prompt
+    return self.generate(prompt_strings, stop=stop, callbacks=callbacks, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_core/language_models/llms.py", line 973, in generate
+    return self._generate_helper(
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_core/language_models/llms.py", line 792, in _generate_helper
+    self._generate(
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_community/llms/ollama.py", line 437, in _generate
+    final_chunk = super()._stream_with_aggregation(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_community/llms/ollama.py", line 349, in _stream_with_aggregation
+    for stream_resp in self._create_generate_stream(prompt, stop, **kwargs):
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_community/llms/ollama.py", line 194, in _create_generate_stream
+    yield from self._create_stream(
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_community/llms/ollama.py", line 273, in _create_stream
+    raise ValueError(
+ValueError: Ollama call failed with status code 500. Details: {"error":"model requires more system memory (6.1 GiB) than is available (4.3 GiB)"}
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/ayush/Documents/bitbud/backend/main.py", line 54, in ask
+    result = graph.invoke({"input": user_input})
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langgraph/pregel/__init__.py", line 2719, in invoke
+    for chunk in self.stream(
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langgraph/pregel/__init__.py", line 2436, in stream
+    for _ in runner.tick(
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_core/runnables/base.py", line 4771, in invoke
+    return self._call_with_config(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_core/runnables/base.py", line 1940, in _call_with_config
+    context.run(
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_core/runnables/config.py", line 428, in call_func_with_variable_args
+    return func(input, **kwargs)  # type: ignore[call-arg]
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_core/runnables/base.py", line 4629, in _invoke
+    output = call_func_with_variable_args(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/venv/lib/python3.12/site-packages/langchain_core/runnables/config.py", line 428, in call_func_with_variable_args
+    return func(input, **kwargs)  # type: ignore[call-arg]
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/agent/langGraphRouter.py", line 31, in route_input
+    result = get_intent(user_input)
+             ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush/Documents/bitbud/backend/agent/llm.py", line 107, in get_intent
+    return {"function": "fallback", "args": {}, "error": str(e), "raw": raw_response}
+                                                                        ^^^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'raw_response' where it is not associated with a value
+During task with name 'route_input' and id '2ef06279-baa9-f90d-6fa0-dd87e6a062ac'
+
+2025-06-12 16:25:11,616 - werkzeug - INFO - 127.0.0.1 - - [12/Jun/2025 16:25:11] "[35m[1mPOST /ask HTTP/1.1[0m" 500 -
+2025-06-12 16:43:16,438 - __main__ - INFO - BitBud graph initialized successfully
+2025-06-12 16:43:16,439 - __main__ - INFO - Starting BitBud backend on port 5001
+2025-06-12 16:43:16,441 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5001
+2025-06-12 16:43:16,441 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-06-12 16:43:31,538 - __main__ - INFO - Processing user input: tell me my active alarms...
+2025-06-12 16:44:43,794 - __main__ - INFO - Generated reply: Unknown clock command. Available: get_time, alarm,...
+2025-06-12 16:44:43,798 - werkzeug - INFO - 127.0.0.1 - - [12/Jun/2025 16:44:43] "POST /ask HTTP/1.1" 200 -
+2025-06-12 16:49:15,999 - __main__ - INFO - BitBud graph initialized successfully
+2025-06-12 16:49:16,000 - __main__ - INFO - Starting BitBud backend on port 5001
+2025-06-12 16:49:16,003 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5001
+2025-06-12 16:49:16,003 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-06-12 16:49:19,095 - __main__ - INFO - Processing user input: tell me my active alarms...
+2025-06-12 16:50:22,979 - __main__ - INFO - Generated reply: Active alarms: No active alarms...
+2025-06-12 16:50:22,980 - werkzeug - INFO - 127.0.0.1 - - [12/Jun/2025 16:50:22] "POST /ask HTTP/1.1" 200 -

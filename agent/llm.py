@@ -34,6 +34,10 @@ Available functions:
    - Alarm: “set alarm for 6:30” → `type: "alarm", hour, minute`
    - Timer: “start a 10-minute timer” → `type: "timer", seconds`
    - Current time: “what time is it?” → `type: "get_time"`
+   - List alarms: “list all alarms” → `type: "get_active_alarms"`
+   - List timers: “list all timers” → `type: "get_active_timers"`
+   - Clear alarms: “clear all alarms” → `type: "clear_alarms"`
+   - Clear timers: “clear all timers” → `type: "clear_timers"`
 6. Use `fallback` for **ALL** other vague, conversational, non-command messages, memory based, user asking questions about them and their life (e.g., “My name is John”, “How are you?”, “This is great”, “Can you help?”, “I like pizza”, "What is my..?").
 7. You have an ABOUT.md file that contains information about the user. If the user asks something that can be answered by the agent's memory, use the `fallback` function to retrieve the information from the memory and return it as a response.
 8. Use **exactly** the function names and argument formats as shown below. Always use the correct function name and argument structure.
