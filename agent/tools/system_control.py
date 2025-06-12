@@ -104,56 +104,155 @@ def kill_process(pid):
     except Exception as e:
         return f"[ERROR] Failed to kill process: {str(e)}"
 
+def immediate_action(action):
+    """Immediate shutdown/restart/logout"""
+    try:
+        if action == "shutdown":
+            os.system("sudo shutdown -h now")
+            return "Shutting down immediately..."
+        elif action == "restart":
+            os.system("sudo reboot")
+            return "Restarting immediately..."
+        elif action == "logout":
+            os.system("pkill -KILL -u $USER")
+            return "Logging out..."
+        elif action == "sleep":
+            os.system("sudo systemctl suspend")
+            return "Going to sleep..."
+        elif action == "hibernate":
+            os.system("sudo systemctl hibernate")
+            return "Hibernating..."
+        else:
+            return "[ERROR] Unknown action. I can shutdown, restart, logout, sleep, hibernate"
+    except Exception as e:
+        return f"[ERROR] Failed to perform {action}: {str(e)}"
+
+def get_system_temperature():
+    """Get system temperature sensors"""
+    try:
+        temps = psutil.sensors_temperatures()
+        if not temps:
+            return "🌡️ No temperature sensors detected"
+        
+        output = "🌡️ System Temperature:\n"
+        for name, entries in temps.items():
+            output += f"\n{name}:\n"
+            for entry in entries:
+                temp_c = entry.current
+                output += f"  {entry.label or 'Sensor'}: {temp_c:.1f}°C\n"
+        
+        return output.strip()
+        
+    except Exception as e:
+        return f"[ERROR] Failed to get temperature: {str(e)}"
+
+def control_volume(action, value=None):
+    """Control system volume"""
+    try:
+        if action == "get":
+            # Get current volume
+            result = subprocess.run(["amixer", "get", "Master"], capture_output=True, text=True, timeout=10)
+            if result.returncode == 0:
+                # Parsing volume from amixer output
+                lines = result.stdout.split('\n')
+                for line in lines:
+                    if '[' in line and '%' in line:
+                        volume = line.split('[')[1].split('%')[0]
+                        muted = '[off]' in line
+                        status = "Muted" if muted else "Unmuted"
+                        return f"Volume: {volume}% ({status})"
+            return "Volume: Unable to detect"
+
+        elif action == "set":
+            if value is None:
+                return "[ERROR] Please specify volume level (0-100)"
+            try:
+                vol = int(value)
+                if not 0 <= vol <= 100:
+                    return "[ERROR] Volume must be between 0-100"
+            except ValueError:
+                return "[ERROR] Volume must be a number"
+            
+            result = subprocess.run(["amixer", "set", "Master", f"{vol}%"], capture_output=True, text=True, timeout=10)
+            if result.returncode == 0:
+                return f"Volume set to {vol}%"
+            else:
+                return f"[ERROR] Failed to set volume: {result.stderr}"
+                
+        elif action == "mute":
+            result = subprocess.run(["amixer", "set", "Master", "mute"], capture_output=True, text=True, timeout=10)
+            if result.returncode == 0:
+                return "Volume muted"
+            else:
+                return f"[ERROR] Failed to mute: {result.stderr}"
+                
+        elif action == "unmute":
+            result = subprocess.run(["amixer", "set", "Master", "unmute"], capture_output=True, text=True, timeout=10)
+            if result.returncode == 0:
+                return "Volume unmuted"
+            else:
+                return f"[ERROR] Failed to unmute: {result.stderr}"
+                
+        elif action == "up":
+            amount = value or "5"
+            result = subprocess.run(["amixer", "set", "Master", f"{amount}%+"], capture_output=True, text=True, timeout=10)
+            if result.returncode == 0:
+                return f"Volume increased by {amount}%"
+            else:
+                return f"[ERROR] Failed to increase volume: {result.stderr}"
+                
+        elif action == "down":
+            amount = value or "5"
+            result = subprocess.run(["amixer", "set", "Master", f"{amount}%-"], capture_output=True, text=True, timeout=10)
+            if result.returncode == 0:
+                return f"Volume decreased by {amount}%"
+            else:
+                return f"[ERROR] Failed to decrease volume: {result.stderr}"
+        else:
+            return "[ERROR] Unknown volume action. Use: get, set, mute, unmute, up, down"
+            
+    except Exception as e:
+        return f"[ERROR] Volume control failed: {str(e)}"
+
+
+
 def system_control(args: dict):
     """Main system control function"""
     cmd_type = args.get("type")
     
     if cmd_type == "get_system_info":
         return get_system_info()
+
     elif cmd_type == "processes":
         return get_running_processes()
+
     elif cmd_type == "kill_process":
         pid = args.get("process", "")
         if not pid:
             return "[ERROR] Please specify process PID"
         return kill_process(pid)
-    elif cmd_type == "network":
-        return get_network_info()
-    elif cmd_type == "schedule":
-        action = args.get("action", "shutdown")
-        try:
-            minutes = int(args.get("minutes", 5))
-        except ValueError:
-            return "[ERROR] Minutes must be a number"
-        return scheduled_shutdown(minutes, action)
-    elif cmd_type == "cancel_shutdown":
-        return cancel_scheduled_shutdown()
-    elif cmd_type == "immediate":
-        action = args.get("action", "shutdown")
+
+    elif cmd_type == "immediate_action":
+        action = args.get("action")
         return immediate_action(action)
-    elif cmd_type == "battery":
-        return get_battery_info()
-    elif cmd_type == "temperature":
+
+    elif cmd_type == "get_system_temperature":
         return get_system_temperature()
-    elif cmd_type == "cleanup":
-        return clean_system()
+
     elif cmd_type == "volume":
         action = args.get("action", "get")
         value = args.get("value")
         return control_volume(action, value)
-    elif cmd_type == "brightness":
-        action = args.get("action", "get")
-        value = args.get("value")
-        return control_brightness(action, value)
-    elif cmd_type == "bluetooth":
-        action = args.get("action", "status")
-        device = args.get("device")
-        return control_bluetooth(action, device)
-    elif cmd_type == "media":
-        action = args.get("action", "status")
-        return control_media(action)
-    elif cmd_type == "lock":
-        return lock_screen()
+
+    # elif cmd_type == "brightness":
+    #     action = args.get("action", "get")
+    #     value = args.get("value")
+    #     return control_brightness(action, value)
+
+    # elif cmd_type == "media":
+    #     action = args.get("action", "status")
+    #     return control_media(action)
+
     else:
         return """[ERROR] Unknown system control command. Please specify a valid type.
         """

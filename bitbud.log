@@ -412,3 +412,50 @@ During task with name 'route_input' and id '2ef06279-baa9-f90d-6fa0-dd87e6a062ac
 2025-06-12 21:25:03,425 - __main__ - INFO - Generated reply: Top Processes (by CPU usage):
  1. ollama          ...
 2025-06-12 21:25:03,425 - werkzeug - INFO - 127.0.0.1 - - [12/Jun/2025 21:25:03] "POST /ask HTTP/1.1" 200 -
+2025-06-12 22:56:29,027 - __main__ - INFO - BitBud graph initialized successfully
+2025-06-12 22:56:29,028 - __main__ - INFO - Starting BitBud backend on port 5001
+2025-06-12 22:56:29,030 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5001
+2025-06-12 22:56:29,030 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-06-12 22:56:55,917 - __main__ - INFO - Processing user input: i feel like my system is heating up, whats the tem...
+2025-06-12 22:58:31,539 - __main__ - INFO - Generated reply: [ERROR] Unknown system control command. Please spe...
+2025-06-12 22:58:31,579 - werkzeug - INFO - 127.0.0.1 - - [12/Jun/2025 22:58:31] "POST /ask HTTP/1.1" 200 -
+2025-06-12 22:59:11,510 - __main__ - INFO - Processing user input: whats the system temperature?...
+2025-06-12 23:00:57,205 - __main__ - INFO - Generated reply: [ERROR] Unknown system control command. Please spe...
+2025-06-12 23:00:57,205 - werkzeug - INFO - 127.0.0.1 - - [12/Jun/2025 23:00:57] "POST /ask HTTP/1.1" 200 -
+2025-06-12 23:03:28,041 - __main__ - INFO - BitBud graph initialized successfully
+2025-06-12 23:03:28,042 - __main__ - INFO - Starting BitBud backend on port 5001
+2025-06-12 23:03:28,057 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5001
+2025-06-12 23:03:28,057 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-06-12 23:05:10,851 - __main__ - INFO - Processing user input: whats the system temperature?...
+2025-06-12 23:06:52,724 - __main__ - INFO - Generated reply: 🌡️ System Temperature:
+
+nvme:
+  Composite: 44.9°C
+...
+2025-06-12 23:06:52,724 - werkzeug - INFO - 127.0.0.1 - - [12/Jun/2025 23:06:52] "POST /ask HTTP/1.1" 200 -
+2025-06-13 02:21:21,850 - __main__ - INFO - BitBud graph initialized successfully
+2025-06-13 02:21:21,852 - __main__ - INFO - Starting BitBud backend on port 5001
+2025-06-13 02:21:21,855 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5001
+2025-06-13 02:21:21,855 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-06-13 02:21:34,211 - __main__ - INFO - Processing user input: increase volume by 25%...
+2025-06-13 02:23:25,496 - __main__ - INFO - Generated reply: 🔊 Volume increased by 25%...
+2025-06-13 02:23:25,642 - werkzeug - INFO - 127.0.0.1 - - [13/Jun/2025 02:23:25] "POST /ask HTTP/1.1" 200 -
+2025-06-13 02:44:49,410 - __main__ - INFO - BitBud graph initialized successfully
+2025-06-13 02:44:49,411 - __main__ - INFO - Starting BitBud backend on port 5001
+2025-06-13 02:44:49,413 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5001
+2025-06-13 02:44:49,413 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-06-13 02:55:04,825 - __main__ - INFO - Processing user input: increase volume by 25%...
+2025-06-13 02:56:53,099 - __main__ - INFO - Generated reply: [ERROR] Volume control failed: [Errno 2] No such f...
+2025-06-13 02:56:53,154 - werkzeug - INFO - 127.0.0.1 - - [13/Jun/2025 02:56:53] "POST /ask HTTP/1.1" 200 -
+2025-06-13 03:16:43,187 - __main__ - INFO - BitBud graph initialized successfully
+2025-06-13 03:16:43,189 - __main__ - INFO - Starting BitBud backend on port 5001
+2025-06-13 03:16:43,191 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5001
+2025-06-13 03:16:43,191 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-06-13 03:16:56,723 - __main__ - INFO - Processing user input: increase volume by 25%...
+2025-06-13 03:18:40,680 - __main__ - INFO - Generated reply: [ERROR] Volume control failed: [Errno 2] No such f...
+2025-06-13 03:18:40,682 - werkzeug - INFO - 127.0.0.1 - - [13/Jun/2025 03:18:40] "POST /ask HTTP/1.1" 200 -
