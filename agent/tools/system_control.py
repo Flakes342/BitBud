@@ -172,12 +172,17 @@ def control_volume(action, value=None):
                     return "[ERROR] Volume must be between 0-100"
             except ValueError:
                 return "[ERROR] Volume must be a number"
+
             
-            result = subprocess.run(["amixer", "set", "Master", f"{vol}%"], capture_output=True, text=True, timeout=10)
-            if result.returncode == 0:
-                return f"Volume set to {vol}%"
+            result1 = subprocess.run(["amixer", "set", "Master", "unmute"], capture_output=True, text=True, timeout=10)
+            if result1.returncode == 0:
+                result2 = subprocess.run(["amixer", "set", "Master", f"{vol}%"], capture_output=True, text=True, timeout=10)
+                if result2.returncode == 0:
+                    return f"Volume set to {vol}%"
+                else:
+                    return f"[ERROR] Failed to set volume: {result.stderr}"
             else:
-                return f"[ERROR] Failed to set volume: {result.stderr}"
+                return f"[ERROR] Failed to unmute before setting volume: {result1.stderr}"
                 
         elif action == "mute":
             result = subprocess.run(["amixer", "set", "Master", "mute"], capture_output=True, text=True, timeout=10)
@@ -195,19 +200,27 @@ def control_volume(action, value=None):
                 
         elif action == "up":
             amount = value or "5"
-            result = subprocess.run(["amixer", "set", "Master", f"{amount}%+"], capture_output=True, text=True, timeout=10)
-            if result.returncode == 0:
-                return f"Volume increased by {amount}%"
+            result1 = subprocess.run(["amixer", "set", "Master", "unmute"], capture_output=True, text=True, timeout=10)
+            if result1.returncode == 0:
+                result2 = subprocess.run(["amixer", "set", "Master", f"{amount}%+"], capture_output=True, text=True, timeout=10)
+                if result2.returncode == 0:
+                    return f"Volume increased by {amount}%"
+                else:
+                    return f"[ERROR] Failed to increase volume: {result.stderr}"
             else:
-                return f"[ERROR] Failed to increase volume: {result.stderr}"
+                return f"[ERROR] Failed to unmute before increasing volume: {result1.stderr}"
                 
         elif action == "down":
             amount = value or "5"
-            result = subprocess.run(["amixer", "set", "Master", f"{amount}%-"], capture_output=True, text=True, timeout=10)
-            if result.returncode == 0:
-                return f"Volume decreased by {amount}%"
+            result1 = subprocess.run(["amixer", "set", "Master", "unmute"], capture_output=True, text=True, timeout=10)
+            if result1.returncode == 0:
+                result2 = subprocess.run(["amixer", "set", "Master", f"{amount}%-"], capture_output=True, text=True, timeout=10)
+                if result2.returncode == 0:
+                    return f"Volume decreased by {amount}%"
+                else:
+                    return f"[ERROR] Failed to decrease volume: {result.stderr}"
             else:
-                return f"[ERROR] Failed to decrease volume: {result.stderr}"
+                return f"[ERROR] Failed to unmute before decreasing volume: {result1.stderr}"
         else:
             return "[ERROR] Unknown volume action. Use: get, set, mute, unmute, up, down"
             

@@ -459,3 +459,46 @@ nvme:
 2025-06-13 03:16:56,723 - __main__ - INFO - Processing user input: increase volume by 25%...
 2025-06-13 03:18:40,680 - __main__ - INFO - Generated reply: [ERROR] Volume control failed: [Errno 2] No such f...
 2025-06-13 03:18:40,682 - werkzeug - INFO - 127.0.0.1 - - [13/Jun/2025 03:18:40] "POST /ask HTTP/1.1" 200 -
+2025-06-13 16:17:38,546 - __main__ - INFO - BitBud graph initialized successfully
+2025-06-13 16:17:38,547 - __main__ - INFO - Starting BitBud backend on port 5001
+2025-06-13 16:17:38,548 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5001
+2025-06-13 16:17:38,549 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-06-13 16:17:42,305 - __main__ - INFO - Processing user input: increase volume by 25%...
+2025-06-13 16:19:31,694 - __main__ - INFO - Generated reply: Volume increased by 25%...
+2025-06-13 16:19:31,738 - werkzeug - INFO - 127.0.0.1 - - [13/Jun/2025 16:19:31] "POST /ask HTTP/1.1" 200 -
+2025-06-13 16:25:15,809 - __main__ - INFO - BitBud graph initialized successfully
+2025-06-13 16:25:15,810 - __main__ - INFO - Starting BitBud backend on port 5001
+2025-06-13 16:25:15,812 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5001
+2025-06-13 16:25:15,812 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-06-13 16:25:20,262 - __main__ - INFO - Processing user input: increase volume by 25%...
+2025-06-13 16:27:11,760 - __main__ - INFO - Generated reply: Volume increased by 25%...
+2025-06-13 16:27:11,788 - werkzeug - INFO - 127.0.0.1 - - [13/Jun/2025 16:27:11] "POST /ask HTTP/1.1" 200 -
+2025-06-13 16:29:02,638 - __main__ - INFO - Processing user input: set volume to 25%...
+2025-06-13 16:30:50,368 - __main__ - INFO - Generated reply: Volume set to 25%...
+2025-06-13 16:30:50,370 - werkzeug - INFO - 127.0.0.1 - - [13/Jun/2025 16:30:50] "POST /ask HTTP/1.1" 200 -
+2025-06-13 16:34:11,399 - __main__ - INFO - BitBud graph initialized successfully
+2025-06-13 16:34:11,400 - __main__ - INFO - Starting BitBud backend on port 5001
+2025-06-13 16:34:11,403 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5001
+2025-06-13 16:34:11,403 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-06-13 16:35:31,932 - __main__ - INFO - Processing user input: set volume to 75%...
+2025-06-13 16:37:15,931 - __main__ - INFO - Generated reply: Volume set to 75%...
+2025-06-13 16:37:15,933 - werkzeug - INFO - 127.0.0.1 - - [13/Jun/2025 16:37:15] "POST /ask HTTP/1.1" 200 -
+2025-06-13 17:40:53,027 - __main__ - INFO - BitBud graph initialized successfully
+2025-06-13 17:40:53,028 - __main__ - INFO - Starting BitBud backend on port 5001
+2025-06-13 17:40:53,029 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5001
+2025-06-13 17:40:53,029 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-06-13 17:40:55,751 - __main__ - INFO - Processing user input: set volume to 75%...
+2025-06-13 17:41:24,955 - __main__ - INFO - BitBud graph initialized successfully
+2025-06-13 17:41:24,957 - __main__ - INFO - Starting BitBud backend on port 5001
+2025-06-13 17:42:09,980 - __main__ - INFO - BitBud graph initialized successfully
+2025-06-13 17:42:09,981 - __main__ - INFO - Starting BitBud backend on port 5001
+2025-06-13 17:42:09,984 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5001
+2025-06-13 17:42:09,984 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-06-13 17:42:53,247 - __main__ - INFO - Processing user input: increase volume by 75%...
+2025-06-13 17:44:56,608 - __main__ - INFO - Generated reply: Volume increased by 75%...
+2025-06-13 17:44:56,610 - werkzeug - INFO - 127.0.0.1 - - [13/Jun/2025 17:44:56] "POST /ask HTTP/1.1" 200 -
