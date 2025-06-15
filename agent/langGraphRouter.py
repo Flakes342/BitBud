@@ -195,11 +195,11 @@ def decide_execution_path(state: BitBudState) -> str:
     logger.info(f"Deciding execution path: tool_chain length = {len(tool_chain)}")
     
     if len(tool_chain) > 1:
-        return "process_tool_chain"  # Fixed: was "tool_chain"
+        return "process_tool_chain"
     
     # Single tool execution
     if func in FUNCTION_HANDLERS:
-        return "execute_single_tool"  # Fixed: was "execute_tool"
+        return "execute_single_tool"
     
     return "execute_single_tool"
 
