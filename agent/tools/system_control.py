@@ -132,9 +132,9 @@ def get_system_temperature():
     try:
         temps = psutil.sensors_temperatures()
         if not temps:
-            return "🌡️ No temperature sensors detected"
+            return "No temperature sensors detected"
         
-        output = "🌡️ System Temperature:\n"
+        output = "System Temperature:\n"
         for name, entries in temps.items():
             output += f"\n{name}:\n"
             for entry in entries:

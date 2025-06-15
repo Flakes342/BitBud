@@ -46,7 +46,7 @@ def ask():
         # Check if graph is available
         if graph is None:
             logger.error("Graph not initialized, cannot process request")
-            return jsonify({"error": "BitBud is not ready. Please restart the service."}), 503
+            return jsonify({"error": "BitBud is not ready. Please restart the service. If the issue persists, check the logs or contact support."}), 503
         
         logger.info(f"Processing user input: {user_input[:50]}...")
         

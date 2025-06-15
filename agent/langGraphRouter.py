@@ -1,9 +1,8 @@
 import urllib.parse
-from typing import TypedDict
 from langchain_core.runnables import RunnableLambda
 from langgraph.graph import StateGraph, END
 from agent.chromaMemory import handle_user_input 
-
+from typing import TypedDict, Dict, Any, List
 from agent.llm import get_intent
 from agent.tools.clock import clock
 from agent.tools.search import search_web
@@ -11,14 +10,39 @@ from agent.tools.app_launcher import open_app
 from agent.tools.recommend import recommend_music
 from agent.tools.shell_command import linux_commands
 from agent.tools.system_control import system_control
+import logging
 
+logger = logging.getLogger(__name__)
 
 # --- BitBud state
 class BitBudState(TypedDict, total=False):
     input: str
     output: str
     function: str
-    args: dict
+    args: Dict[str, Any]
+    tool_chain: List[Dict[str, Any]]
+    current_tool_index: int
+    execution_results: List[str]
+
+
+def fallback(args: Dict[str, Any] = None) -> str:
+    """Fallback function that uses RAG for unknown intents."""
+    user_input = args.get("user_input", "") if args else ""
+    if user_input:
+        return handle_user_input(user_input)
+    return "I'm not sure how to help with that."
+
+
+FUNCTION_HANDLERS = {
+    "open_app": open_app,
+    "recommend_music": recommend_music,
+    "search_web": search_web,
+    "linux_commands": linux_commands,
+    "clock": clock,
+    "system_control": system_control,
+    "fallback": fallback
+}
+
 
 def parse_args(args):
     if isinstance(args, dict):
@@ -27,96 +51,187 @@ def parse_args(args):
         return dict(urllib.parse.parse_qsl(args))
     return {}
 
+
+def normalize_intent_result(result: Any) -> List[Dict[str, Any]]:
+    """Normalizing LLM intent result to consistent format >> dict in this case."""
+    if isinstance(result, list):
+        return result
+    if isinstance(result, dict):
+        return [result]
+    return []
+
 # --- Route input to functions or fallback to RAG
 def route_input(state):
     user_input = state["input"]
-    result = get_intent(user_input)
+    result = get_intent(user_input) 
 
-    func = result.get("function")
-    args = parse_args(result.get("args", {}))
-    print(f"[Router] Function: {func}, Args: {args}")
+    tool_chain = normalize_intent_result(result)
+    
+    if not tool_chain:
+        # Fallback to RAG - create fallback tool chain
+        tool_chain = [{
+            "function": "fallback",
+            "args": {"user_input": user_input}
+        }]
 
-    if func == "open_app":
-        return {"function": "open_app", "args": args}
-    elif func == "recommend_music":
-        return {"function": "recommend_music", "args": args}
-    elif func == "search_web":
-        return {"function": "search_web", "args": args}
-    elif func == "linux_commands":
-        return {"function": "linux_commands", "args": args}
-    elif func == "clock":
-        return {"function": "clock", "args": args}
-    elif func == "system_control":
-        return {"function": "system_control", "args": args}
+    logger.warning(f"Intent returned by LLM: {result}")
+    logger.warning(f"Tool Chain by LLM: {tool_chain}")
 
-    # For anything else (remember, recall, fallback): RAG
-    rag_response = handle_user_input(user_input)
+    first_tool = tool_chain[0]
+    func = first_tool.get("function")
+    args = parse_args(first_tool.get("args", {}))
+    
     return {
-        "function": "fallback",
-        "args": {},
-        "output": rag_response
+        "function": func,
+        "args": args,
+        "output": "",
+        "tool_chain": tool_chain,
+        "current_tool_index": 0,
+        "execution_results": []
     }
 
-# --- Intent handlers
-def handle_open_app(state): 
-    name = state["args"].get("name", "")
-    query = state["args"].get("query", "")
-    return {"output": open_app(name, query)} #changed to match new open_app signature
 
-def handle_recommend_music(state): 
-    return {"output": recommend_music()}
+def execute_single_tool(state: BitBudState) -> Dict[str, Any]:
+    """Execute a single tool and return the result."""
+    func = state.get("function")
+    args = state.get("args", {})
+    
+    if func not in FUNCTION_HANDLERS:
+        return {"output": f"Unknown function: {func}"}
+    
+    try:
+        handler = FUNCTION_HANDLERS[func]
+        
+        # Function-specific handling >> handler functions have different signatures
+        if func == "open_app":
+            name = args.get("name", "")
+            query = args.get("query", "")
+            result = handler(name, query)
+        elif func == "search_web":
+            result = handler(args.get("query", ""))
+        elif func == "linux_commands":
+            result = handler(args.get("command", ""))
+        elif func == "recommend_music":
+            result = handler()
+        elif func in ["clock", "system_control", "fallback"]:
+            result = handler(args)
+        else:
+            result = handler(args)
+        
+        logger.info(f"Executed {func} with args {args}, result: {result}")
+        return {"output": str(result)}
+        
+    except Exception as e:
+        logger.error(f"Error executing {func}: {str(e)}")
+        return {"output": f"Error executing {func}: {str(e)}"}
 
-def handle_search_web(state): 
-    return {"output": search_web(state["args"].get("query", ""))}
 
-def handle_linux_commands(state): 
-    return {"output": linux_commands(state["args"].get("command", ""))}
+def process_tool_chain(state: BitBudState) -> Dict[str, Any]:
+    """Process the next tool in the chain."""
+    tool_chain = state.get("tool_chain", [])
+    current_index = state.get("current_tool_index", 0)
+    execution_results = state.get("execution_results", [])
+    
+    logger.info(f"Processing tool chain: index {current_index}/{len(tool_chain)}")
+    
+    if current_index >= len(tool_chain):
+        # All tools executed, combine results
+        final_output = "\n".join(execution_results) if execution_results else "All tasks completed."
+        logger.info(f"Tool chain completed. Final output: {final_output}")
+        return {
+            "output": final_output,
+            "function": "completed",
+            "execution_results": execution_results
+        }
+    
+    # Get current tool to execute
+    current_tool = tool_chain[current_index]
+    func = current_tool.get("function")
+    args = parse_args(current_tool.get("args", {}))
+    
+    logger.info(f"Executing tool {current_index + 1}/{len(tool_chain)}: {func} with args {args}")
+    
+    # Create a temporary state for this tool execution
+    temp_state = {
+        "function": func,
+        "args": args
+    }
+    
+    # Execute the current tool
+    result = execute_single_tool(temp_state)
+    output = result.get("output", "")
+    execution_results.append(output)
+    
+    logger.info(f"Tool {func} executed. Output: {output}")
+    
+    # Return updated state
+    return {
+        "function": func,
+        "args": args,
+        "current_tool_index": current_index + 1,
+        "execution_results": execution_results,
+        "output": output,
+        "tool_chain": tool_chain
+    }
 
-def handle_clock(state):
-    args = state["args"]
-    return {"output": clock(args)}
 
-def handle_system_control(state):
-    args = state["args"]
-    return {"output": system_control(args)}
+def should_continue_chain(state: BitBudState) -> str:
+    """Determine if there are more tools to execute in the chain."""
+    tool_chain = state.get("tool_chain", [])
+    current_index = state.get("current_tool_index", 0)
+    
+    logger.info(f"Checking chain continuation: {current_index} < {len(tool_chain)}")
+    
+    if current_index < len(tool_chain):
+        return "continue_chain"
+    return "end_chain"
 
-def fallback_handler(state): 
-    return {"output": state.get("output", "Hmm, not sure what you meant.")}
 
-# --- Build LangGraph
+def decide_execution_path(state: BitBudState) -> str:
+    """Decide whether to use single tool execution or tool chain processing."""
+    tool_chain = state.get("tool_chain", [])
+    func = state.get("function")
+    
+    logger.info(f"Deciding execution path: tool_chain length = {len(tool_chain)}")
+    
+    if len(tool_chain) > 1:
+        return "process_tool_chain"  # Fixed: was "tool_chain"
+    
+    # Single tool execution
+    if func in FUNCTION_HANDLERS:
+        return "execute_single_tool"  # Fixed: was "execute_tool"
+    
+    return "execute_single_tool"
+
+
 def build_graph():
-    graph = StateGraph(BitBudState)
+    try:
+        logger.info("Starting to build BitBud graph...")
 
-    graph.add_node("route_input", RunnableLambda(route_input))
-    graph.add_node("open_app", RunnableLambda(handle_open_app))
-    graph.add_node("recommend_music", RunnableLambda(handle_recommend_music))
-    graph.add_node("search_web", RunnableLambda(handle_search_web))
-    graph.add_node("linux_commands", RunnableLambda(handle_linux_commands))
-    graph.add_node("clock", RunnableLambda(handle_clock))
-    graph.add_node("system_control", RunnableLambda(handle_system_control))
+        graph = StateGraph(BitBudState)
 
+        # nodes - Fixed node names to match routing
+        graph.add_node("route_input", RunnableLambda(route_input))
+        graph.add_node("execute_single_tool", RunnableLambda(execute_single_tool))
+        graph.add_node("process_tool_chain", RunnableLambda(process_tool_chain))
 
-    graph.add_node("fallback", RunnableLambda(fallback_handler))
+        # entry point and conditional edges
+        graph.set_entry_point("route_input")
+        graph.add_conditional_edges("route_input", decide_execution_path, {
+            "execute_single_tool": "execute_single_tool",
+            "process_tool_chain": "process_tool_chain"
+        })
 
-    def decide_next_node(state):
-        func = state.get("function")
-        if func == "open_app": return "open_app"
-        if func == "recommend_music": return "recommend_music"
-        if func == "search_web": return "search_web"
-        if func == "linux_commands": return "linux_commands"
-        if func == "clock": return "clock"
-        if func == "system_control": return "system_control"
-        return "fallback"
+        graph.add_conditional_edges("process_tool_chain", should_continue_chain, {
+            "continue_chain": "process_tool_chain",
+            "end_chain": END
+        })
 
-    graph.set_entry_point("route_input")
-    graph.add_conditional_edges("route_input", decide_next_node)
+        graph.add_edge("execute_single_tool", END)
 
-    graph.add_edge("open_app", END)
-    graph.add_edge("recommend_music", END)
-    graph.add_edge("search_web", END)
-    graph.add_edge("linux_commands", END)
-    graph.add_edge("clock", END)
-    graph.add_edge("system_control", END)
-    graph.add_edge("fallback", END)
+        logger.info("BitBud graph built successfully.")
+        return graph.compile()
 
-    return graph.compile()
+    except Exception as e:
+        logger.exception("Failed to build BitBud graph due to:")
+        raise e
