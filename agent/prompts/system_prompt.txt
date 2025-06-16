@@ -113,7 +113,7 @@ Here are the available tools:
 5. User: open Spotify and set volume to 100% → 
     [
     { "function": "open_app", "args": { "name": "Spotify", "query": "" } },
-    { "function": "system_control", args": { "type": "volume", "action": "set", "value": 50 }}
+    { "function": "system_control", args": { "type": "volume", "action": "set", "value": 100 }}
     ]
 
 6. User: increase volume by 10% → 

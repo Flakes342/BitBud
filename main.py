@@ -48,7 +48,7 @@ def ask():
             logger.error("Graph not initialized, cannot process request")
             return jsonify({"error": "BitBud is not ready. Please restart the service. If the issue persists, check the logs or contact support."}), 503
         
-        logger.info(f"Processing user input: {user_input[:50]}...")
+        logger.info(f"Processing user input: {user_input}...")
         
         # Process with graph
         result = graph.invoke({"input": user_input})

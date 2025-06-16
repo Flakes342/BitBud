@@ -24,10 +24,12 @@ class BitBudState(TypedDict, total=False):
     current_tool_index: int
     execution_results: List[str]
 
-
 def fallback(args: Dict[str, Any] = None) -> str:
     """Fallback function that uses RAG for unknown intents."""
+    # Remove the problematic global user_input reference
     user_input = args.get("user_input", "") if args else ""
+    logger.info(f"user_input_fallback: {user_input}")
+    
     if user_input:
         return handle_user_input(user_input)
     return "I'm not sure how to help with that."
@@ -80,7 +82,11 @@ def route_input(state):
     first_tool = tool_chain[0]
     func = first_tool.get("function")
     args = parse_args(first_tool.get("args", {}))
-    
+
+    if func == "fallback" and "user_input" not in args: # Fallback function doesn't give any args via LLM
+        args["user_input"] = user_input
+        tool_chain[0]["args"] = args # Tool Chain Updated
+
     return {
         "function": func,
         "args": args,
@@ -95,9 +101,15 @@ def execute_single_tool(state: BitBudState) -> Dict[str, Any]:
     """Execute a single tool and return the result."""
     func = state.get("function")
     args = state.get("args", {})
+    execution_results = state.get("execution_results", []) 
     
     if func not in FUNCTION_HANDLERS:
-        return {"output": f"Unknown function: {func}"}
+        error_msg = f"Unknown function: {func}"
+        execution_results.append(error_msg)
+        return {
+            "output": error_msg,
+            "execution_results": execution_results
+        }
     
     try:
         handler = FUNCTION_HANDLERS[func]
@@ -118,13 +130,23 @@ def execute_single_tool(state: BitBudState) -> Dict[str, Any]:
         else:
             result = handler(args)
         
+        output = str(result)
+        execution_results.append(output)  # Adding tool result to execution_results
+        
         logger.info(f"Executed {func} with args {args}, result: {result}")
-        return {"output": str(result)}
+        return {
+            "output": output,
+            "execution_results": execution_results
+        }
         
     except Exception as e:
-        logger.error(f"Error executing {func}: {str(e)}")
-        return {"output": f"Error executing {func}: {str(e)}"}
-
+        error_msg = f"Error executing {func}: {str(e)}"
+        execution_results.append(error_msg)  # Adding error to execution_results
+        logger.error(error_msg)
+        return {
+            "output": error_msg,
+            "execution_results": execution_results
+        }
 
 def process_tool_chain(state: BitBudState) -> Dict[str, Any]:
     """Process the next tool in the chain."""
@@ -134,16 +156,6 @@ def process_tool_chain(state: BitBudState) -> Dict[str, Any]:
     
     logger.info(f"Processing tool chain: index {current_index}/{len(tool_chain)}")
     
-    if current_index >= len(tool_chain):
-        # All tools executed, combine results
-        final_output = "\n".join(execution_results) if execution_results else "All tasks completed."
-        logger.info(f"Tool chain completed. Final output: {final_output}")
-        return {
-            "output": final_output,
-            "function": "completed",
-            "execution_results": execution_results
-        }
-    
     # Get current tool to execute
     current_tool = tool_chain[current_index]
     func = current_tool.get("function")
@@ -151,16 +163,16 @@ def process_tool_chain(state: BitBudState) -> Dict[str, Any]:
     
     logger.info(f"Executing tool {current_index + 1}/{len(tool_chain)}: {func} with args {args}")
     
-    # Create a temporary state for this tool execution
     temp_state = {
         "function": func,
-        "args": args
+        "args": args,
+        "execution_results": execution_results
     }
     
     # Execute the current tool
     result = execute_single_tool(temp_state)
     output = result.get("output", "")
-    execution_results.append(output)
+    updated_execution_results = result.get("execution_results", execution_results)
     
     logger.info(f"Tool {func} executed. Output: {output}")
     
@@ -169,11 +181,24 @@ def process_tool_chain(state: BitBudState) -> Dict[str, Any]:
         "function": func,
         "args": args,
         "current_tool_index": current_index + 1,
-        "execution_results": execution_results,
+        "execution_results": updated_execution_results,
         "output": output,
         "tool_chain": tool_chain
     }
 
+def finalize_tool_chain(state: BitBudState) -> Dict[str, Any]:
+    """Finalize the tool chain execution and combine all results."""
+    execution_results = state.get("execution_results", [])
+    
+    logger.info(f'Execution Results: {execution_results}')
+    final_output = "\n".join(execution_results) if execution_results else "All tasks completed."
+    logger.info(f"Tool chain completed. Final output: {final_output}")
+    
+    return {
+        "output": final_output,
+        "function": "completed",
+        "execution_results": execution_results
+    }
 
 def should_continue_chain(state: BitBudState) -> str:
     """Determine if there are more tools to execute in the chain."""
@@ -184,7 +209,7 @@ def should_continue_chain(state: BitBudState) -> str:
     
     if current_index < len(tool_chain):
         return "continue_chain"
-    return "end_chain"
+    return "finalize_chain"
 
 
 def decide_execution_path(state: BitBudState) -> str:
@@ -214,6 +239,7 @@ def build_graph():
         graph.add_node("route_input", RunnableLambda(route_input))
         graph.add_node("execute_single_tool", RunnableLambda(execute_single_tool))
         graph.add_node("process_tool_chain", RunnableLambda(process_tool_chain))
+        graph.add_node("finalize_tool_chain", RunnableLambda(finalize_tool_chain))
 
         # entry point and conditional edges
         graph.set_entry_point("route_input")
@@ -224,10 +250,11 @@ def build_graph():
 
         graph.add_conditional_edges("process_tool_chain", should_continue_chain, {
             "continue_chain": "process_tool_chain",
-            "end_chain": END
+            "finalize_chain": "finalize_tool_chain"
         })
 
         graph.add_edge("execute_single_tool", END)
+        graph.add_edge("finalize_tool_chain", END)
 
         logger.info("BitBud graph built successfully.")
         return graph.compile()
