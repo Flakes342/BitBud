@@ -8,7 +8,7 @@
 
 
 **Your Local AI Productivity Sidekick**  
-An 8-bit desktop agent that learns your habits, helps automate tasks, and enhances your Linux environment — all running locally on your machine.
+An 8-bit desktop agent that learns your habits, helps automate tasks, and enhances your Linux environment, all running locally on your machine.
 
 ---
 
