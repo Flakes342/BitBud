@@ -5,31 +5,26 @@ import json
 from langchain_core.prompts import PromptTemplate
 from langchain_core.runnables import RunnableLambda
 
+
+SYSTEM_PROMPT_PATH = "agent/prompts/system_prompt.txt"
+RAG_PROMPT_PATH = "agent/prompts/rag_prompt.txt"
+CONEXT_SUMMARY_PROMPT_PATH = "agent/prompts/context_summary_prompt.txt"
+TEXT_TO_SHELL_PROMPT_PATH = "agent/prompts/text_to_shell_prompt.txt"
+
 llm = Ollama(model="gemma3:4b")
 
 def load_system_prompt(file_path: str) -> str:
     with open(file_path, "r", encoding="utf-8") as f:
         return f.read().strip()
 
-SYSTEM_PROMPT_PATH = "agent/prompts/system_prompt.txt"
 system_prompt = load_system_prompt(SYSTEM_PROMPT_PATH)
-
-
-prompt = PromptTemplate.from_template(system_prompt)
 
 def get_intent(user_input):
     prompt = system_prompt + user_input
 
     try:
         raw_response = llm.invoke(prompt).strip()
-        print (raw_response, "Raw RESPONSE")
-
-        # json_start = raw_response.find("{")
-        # json_end = raw_response.rfind("}") + 1
-        # json_block = raw_response[json_start:json_end]
-
-        json_block = re.sub(r"^```(?:json)?\n|\n```$", "", raw_response.strip(), flags=re.IGNORECASE) # Removing md block ''' ''' 
-
+        json_block = re.sub(r"^```(?:json)?\n|\n```$", "", raw_response.strip(), flags=re.IGNORECASE) # Removing md block
         return json.loads(json_block)
 
     except Exception as e:

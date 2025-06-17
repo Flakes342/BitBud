@@ -3,6 +3,7 @@ import uuid
 import logging
 import chromadb
 import requests
+from agent.llm import llm
 from chromadb import Client
 from datetime import datetime
 from chromadb.config import Settings
@@ -240,13 +241,7 @@ def handle_user_input(user_input: str) -> str:
 
         prompt = build_rag_prompt(user_input, memory_context, about_context)
 
-        res = requests.post("http://localhost:11434/api/generate", json={
-            "model": "gemma3:4b",
-            "prompt": prompt,
-            "stream": False
-        })
-
-        reply = res.json().get("response", "...").strip()
+        reply = llm.invoke(prompt).strip()
 
         # Store reply (with filtering)
         store_to_memory(reply, metadata={"source": "BitBud"})
