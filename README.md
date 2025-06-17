@@ -56,5 +56,12 @@ python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 python3 main.py
+```
 
+## Application Flow
+
+<p align="center">
+  <img width="600" height="500" src="[https://github.com/user-attachments/assets/84724850-bf67-4fac-85c5-0d4cfed4f648](https://github.com/user-attachments/assets/ed1a7c54-cbc7-4faf-8608-0bde1de6d1c1)"
+ />
+</p>
 
