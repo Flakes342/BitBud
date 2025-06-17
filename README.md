@@ -61,7 +61,7 @@ python3 main.py
 ## Application Flow
 
 <p align="center">
-  <img width="300" height="1000" src="https://github.com/user-attachments/assets/ed1a7c54-cbc7-4faf-8608-0bde1de6d1c1"
+  <img width="300" height="800" src="https://github.com/user-attachments/assets/ed1a7c54-cbc7-4faf-8608-0bde1de6d1c1"
  />
 </p>
 
