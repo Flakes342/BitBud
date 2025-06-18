@@ -86,7 +86,6 @@ Here are the available tools:
 
     12. No explanations, no markdown, no commentary — just valid JSON output.
 
-
 ### EXAMPLES ###
 
 1. User: open YouTube and search lo-fi beats → 
@@ -229,8 +228,4 @@ Always respond with a JSON array of function call objects, like this:
   }
 ]
 
-No surrounding text, no formatting, no comments. Only reply with the list of tool calls (as structured JSON objects).
-
-Now respond to the user’s message using this structure.
-
-User: 
+User:   

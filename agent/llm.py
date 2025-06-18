@@ -19,8 +19,13 @@ def load_system_prompt(file_path: str) -> str:
 
 system_prompt = load_system_prompt(SYSTEM_PROMPT_PATH)
 
-def get_intent(user_input):
-    prompt = system_prompt + user_input
+def get_intent(user_input, clarify, reasoning, steps, final_instruction) -> dict:
+    prompt = system_prompt + user_input + "\n\n" + \
+             "### ADDITIONAL INFORMATION" + \
+             f"Clarify: {clarify}\n" + \
+             f"Reasoning: {reasoning}\n" + \
+             f"Steps: {', '.join(steps)}\n" + \
+             f"Final Instruction: {final_instruction}\n\n"
 
     try:
         raw_response = llm.invoke(prompt).strip()
@@ -84,6 +89,122 @@ User: {message}
 Command:"""
     cmd = llm.invoke(prompt).strip()
     return cmd if cmd else "echo 'No command generated'"
+
+
+def get_plan(user_input: str) -> dict:
+    prompt = f"""
+You are BitBud's internal Planning Agent — a Chain-of-Thought thinker for pre-routing reasoning.
+
+Your goal is to deeply analyze the user's natural language input and do the following:
+
+---
+
+### TASKS:
+
+1. **Step-by-step reasoning:** Break down what the user likely wants, even if not fully explicit.
+2. **Ask clarification**: ONLY IF there is ambiguity, return a clarification question in the `clarify` field.
+3. **Decompose into steps**: List what needs to be done, in clean English steps.
+4. **Generate the final instruction**: Rewrite the final command that should go to the intent router, with all ambiguities resolved.
+
+---
+### AVAILABLE TOOLS:
+    1. open_app(name: str, query: Optional[str])
+        Launch an application or open a specific search inside an app like YouTube or Spotify.
+        If only an app name is given, omit query or set it to "".
+
+    2. recommend_music()
+        Only use this if the user explicitly asks for music suggestions, song recommendations, or similar.
+
+    3. search_web(query: str)
+        Use when the user asks to look something up online, e.g., "Google", "look up", "search web", "find info online".
+
+    4. linux_commands(command: str)
+        Use when the user asks to execute terminal commands (e.g., “run ls”, “show directory”).
+
+    5. clock(type: str, hour: Optional[int], minute: Optional[int], seconds: Optional[int], objective: Optional[str])
+        For alarms, timers, or current time.
+        Types include: "alarm", "timer", "get_time", "get_active_alarms", "get_active_timers", "clear_alarms", "clear_timers".
+
+    6. system_control(type: str, ...args)
+        For system info, temperature, process handling, volume, shutdown, restart, etc.
+
+    7. fallback()
+        Use this if the user's message is:
+            Conversational (e.g., “How are you?”, “This is cool”)
+            Memory-based or personal (e.g., “What’s my name?”, “Remind me what I said”)
+            Unclear, vague, or lacks a specific actionable intent
+---
+
+### EXAMPLES:
+
+User: "my laptop is heating up"
+→ 
+{{
+  "clarify": null,
+  "reasoning": "The user is reporting a thermal issue. First, we need to check temperature. Then diagnose running processes. Possibly recommend tips.",
+  "steps": [
+    "Check system temperature",
+    "List current running processes",
+    "Suggest ways to reduce overheating"
+  ],
+  "final_instruction": "Check system temperature, list current processes, and suggest tips to reduce heating."
+}}
+
+User: "set a timer"
+→ 
+{{
+  "clarify": "How long should I set the timer for?",
+  "reasoning": "Timer duration is missing. Need more info before planning.",
+  "steps": [],
+  "final_instruction": ""
+}}
+
+User: "open Spotify and search for rainfall sounds"
+→ 
+{{
+  "clarify": null,
+  "reasoning": "User wants to launch Spotify and play a specific type of sound.",
+  "steps": ["Open Spotify with the search term 'rainfall sounds'"],
+  "final_instruction": "Open Spotify and search for rainfall sounds"
+}}
+
+User: "increase volume and check temperature"
+→ 
+{{
+  "clarify": null,
+  "reasoning": "This is a multi-function intent: increase volume and system health check.",
+  "steps": ["Increase volume", "Check system temperature"],
+  "final_instruction": "Increase volume and check system temperature"
+}}
+
+---
+
+### USER INPUT:
+\"\"\"{user_input}\"\"\"
+
+Respond with a ***pure JSON*** object only:
+{{
+  "clarify": str or null,
+  "reasoning": str,
+  "steps": [list of steps],
+  "final_instruction": str
+}}
+    """.strip()
+
+    try:
+        raw = llm.invoke(prompt).strip()
+        json_block = raw.strip("` \n").replace("json\n", "")
+        # print (json_block)
+        return json.loads(json_block)
+    
+    except Exception as e:
+        print("[get_llm_plan ERROR]", e)
+        return {
+            "clarify": None,
+            "reasoning": "Fallback: could not parse plan.",
+            "steps": [],
+            "final_instruction": user_input
+        }
 
 
 
