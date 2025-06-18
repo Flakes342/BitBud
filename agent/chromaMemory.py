@@ -5,7 +5,7 @@ import chromadb
 import requests
 from agent.llm import llm
 from chromadb import Client
-from datetime import datetime
+from datetime import datetime, timedelta
 from chromadb.config import Settings
 from langchain.vectorstores import Chroma
 from chromadb.utils import embedding_functions

@@ -35,11 +35,10 @@ def scrape_gemini_answer(query):
 
 
 def search_web(query):
-    try:
-        summary = scrape_gemini_answer(query)
-        if summary and summary!='No Gemini answer found.':
-            return summary
-    except Exception as e:
+    summary = scrape_gemini_answer(query)
+    if summary and summary!='No Gemini answer found.':
+        return summary
+    else:
         print(f"Error scraping Gemini answer: {e}")
         try:
             encoded_query = urllib.parse.quote_plus(query)
