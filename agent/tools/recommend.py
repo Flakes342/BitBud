@@ -1,2 +1,2 @@
 def recommend_music():
-    return "Try listening to 'Mare Yuvraj Sa Chakka'."
+    return "This tool is under maintenance and not available at the moment. Stay tuned for updates!"

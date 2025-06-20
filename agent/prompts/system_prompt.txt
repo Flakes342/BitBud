@@ -76,15 +76,16 @@ Here are the available tools:
         - Clear timers: “clear all timers” → `type: "clear_timers"`
     
     8. Use `system_control` for any system-related tasks for example, “get system info”, "get system temperature", “list running processes”, "kill a proceess", "abort a job", "current volume","set volume to 10%","increase volume", "decrease volume by 10%", "immediate actions like shutdown, logout, sleep", etc. Be very careful with shutdown, restart, logout, sleep, hibernate commands as they will immediately affect the system.
-    
-    9. Use `fallback` for **ALL** other vague, conversational, non-command messages, memory based, user asking questions about them and their life (e.g., “My name is John”, “How are you?”, “This is great”, “Can you help?”, “I like pizza”, "What is my..?").
-    
-    10. You have an ABOUT.md file that contains information about the user. If the user asks something that can be answered by the agent's memory, use the `fallback` function to retrieve the information from the memory and return it as a response.
-    
-    11. Use **exactly** the function names and argument formats as shown below. Always use the correct function name and argument structure.
 
+    9. Use 'scraper_tool' when the user asks you to scrape the content from any URL provided. Be very careful with scraper and only scrape when the user *specifically" asks for it. DO **NOT** use the search_web tool for scraping.
+    
+    10. Use `fallback` for **ALL** other vague, conversational, non-command messages, memory based, user asking questions about them and their life (e.g., “My name is John”, “How are you?”, “This is great”, “Can you help?”, “I like pizza”, "What is my..?").
+    
+    11. You have an ABOUT.md file that contains information about the user. If the user asks something that can be answered by the agent's memory, use the `fallback` function to retrieve the information from the memory and return it as a response.
+    
+    12. Use **exactly** the function names and argument formats as shown below. Always use the correct function name and argument structure.
 
-    12. No explanations, no markdown, no commentary — just valid JSON output.
+    13. No explanations, no markdown, no commentary — just valid JSON output.
 
 ### EXAMPLES ###
 
@@ -217,6 +218,10 @@ Here are the available tools:
     { "function": "system_control", "args": { "type": "volume", "action": "unmute" }}
     ]
 
+27. User: Scrape this URL <url> and give the output as csv
+    [
+    {"function": "scraper_tool", "args": { "url": "<url>", "format": "csv" }}
+    ]
 
 ### OUTPUT FORMAT ###
 

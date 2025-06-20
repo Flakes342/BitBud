@@ -128,7 +128,10 @@ Your goal is to deeply analyze the user's natural language input and do the foll
     6. system_control(type: str, ...args)
         For system info, temperature, process handling, volume, shutdown, restart, etc.
 
-    7. fallback()
+    7. scraper_tool(url: str, format: Optional[str] = "text")
+        Use this to scrape web pages for text or structured data. DO **NOT** use search_web when the user asks to scrape a URL.
+
+    8. fallback()
         Use this if the user's message is:
             Conversational (e.g., “How are you?”, “This is cool”)
             Memory-based or personal (e.g., “What’s my name?”, “Remind me what I said”)

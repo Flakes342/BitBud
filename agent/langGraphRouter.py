@@ -10,6 +10,7 @@ from agent.tools.app_launcher import open_app
 from agent.tools.recommend import recommend_music
 from agent.tools.shell_command import linux_commands
 from agent.tools.system_control import system_control
+from agent.tools.scraper import scraper_tool  # NEW
 import logging
 
 logger = logging.getLogger(__name__)
@@ -47,6 +48,7 @@ FUNCTION_HANDLERS = {
     "linux_commands": linux_commands,
     "clock": clock,
     "system_control": system_control,
+    "scraper_tool": scraper_tool,  # NEW
     "fallback": fallback
 }
 
@@ -162,6 +164,9 @@ def execute_single_tool(state: BitBudState) -> Dict[str, Any]:
             result = handler()
         elif func in ["clock", "system_control", "fallback"]:
             result = handler(args)
+        elif func == "scraper_tool":
+            result = handler(args)
+        # Default case for other tools
         else:
             result = handler(args)
         
