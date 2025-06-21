@@ -1,39 +1,39 @@
 # Mitchi AI
 
 <p align="center">
-  <img width="300" height="300" src="https://github.com/user-attachments/assets/f257c518-1803-4d70-9abb-c86e54da88cf"
+  <img width="250" height="250" src="https://github.com/user-attachments/assets/f257c518-1803-4d70-9abb-c86e54da88cf"
  />
 </p>
 
 
-
 **Your Local AI Productivity Agent**  
-An desktop agent that learns your habits, helps automate tasks, and enhances your Linux environment, all running locally on your machine.
-It observes you just like Mitchi does..
+Mitchi AI is a **local-first, privacy-respecting AI assistant** that sits on your machine like a chill, command-reactive sidekick. Built as a modular, extensible desktop agent, Mitchi can connect to your favorite tools (Gmail, GitHub, Reddit, Weather, Shell, etc.) and perform intelligent actions on your command using LLMs — but it never does anything behind your back
 
 
 ---
 
 ## Overview
 
-Mitchi AI is a local-first AI assistant designed for Linux desktops. It monitors your behavior, understands your preferences, and proactively assists with daily tasks using local large language models (LLMs), retrieval-augmented generation (RAG), and AI agent workflows.
-
-This project demonstrates a sophisticated desktop co-pilot built with privacy and efficiency in mind.
-
 ---
+Mitchi comes with a suite of both internal and external tools:
 
-## Features
+### Internal Tools
+- Shell command execution
+- Local file reading and summarization
+- Web scraping and summarization
+- Memory manager (note, recall, update)
+- Local goal/task management
 
-- 8-bit floating desktop avatar inspired by classic desktop pets  
-- Optional voice-enabled interaction  
-- Chat interface accessible on hover or click for seamless communication  
-- Integration with local LLMs (via [Ollama](https://ollama.ai)) to ensure offline use  
-- Website observer for logging and summarizing visited content (optional)  
-- Automation of common apps such as Spotify, YouTube, Netflix, and VS Code  
-- Personalized learning to adapt to user preferences over time  
-- Fully private and offline with all data stored locally  
+### External Tools (OAuth-enabled)
+- Gmail: Read, send, summarize, manage emails
+- GitHub: View PRs, issues, notifications
+- Reddit: Fetch and summarize threads, sentiment detection
+- AccuWeather: Get current weather and forecasts
+- Google Maps: Location search and basic directions
+- CoinGecko: Crypto price tracking
+- Calendar & Notion: Scheduling and knowledge access
 
----
+Each external integration requires explicit user login via OAuth. Mitchi never accesses anything without permission.
 
 ## Technology Stack
 
@@ -51,8 +51,8 @@ This project demonstrates a sophisticated desktop co-pilot built with privacy an
 ## Setup Instructions
 
 ```bash
-git clone https://github.com/Flakes342/BitBud.git
-cd BitBud
+git clone https://github.com/Flakes342/MitchiAI.git
+cd mitchi-ai
 
 python3 -m venv venv
 source venv/bin/activate
