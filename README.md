@@ -1,20 +1,22 @@
 # BitBud
 
 <p align="center">
-  <img width="600" height="500" src="https://github.com/user-attachments/assets/84724850-bf67-4fac-85c5-0d4cfed4f648"
+  <img width="600" height="500" src="https://github.com/user-attachments/assets/f257c518-1803-4d70-9abb-c86e54da88cf"
  />
 </p>
 
 
 
-**Your Local AI Productivity Sidekick**  
-An 8-bit desktop agent that learns your habits, helps automate tasks, and enhances your Linux environment, all running locally on your machine.
+**Your Local AI Productivity Agent**  
+An desktop agent that learns your habits, helps automate tasks, and enhances your Linux environment, all running locally on your machine.
+It observes you just like Mitchi does..
+
 
 ---
 
 ## Overview
 
-BitBud is a voice-enabled, local-first AI assistant designed for Linux desktops. It monitors your behavior, understands your preferences, and proactively assists with daily tasks using local large language models (LLMs), retrieval-augmented generation (RAG), and AI agent workflows.
+Mitchi AI is a local-first AI assistant designed for Linux desktops. It monitors your behavior, understands your preferences, and proactively assists with daily tasks using local large language models (LLMs), retrieval-augmented generation (RAG), and AI agent workflows.
 
 This project demonstrates a sophisticated desktop co-pilot built with privacy and efficiency in mind.
 
