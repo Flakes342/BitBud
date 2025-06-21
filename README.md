@@ -1,4 +1,4 @@
-# BitBud
+# Mitchi AI
 
 <p align="center">
   <img width="300" height="300" src="https://github.com/user-attachments/assets/f257c518-1803-4d70-9abb-c86e54da88cf"
